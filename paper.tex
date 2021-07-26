@@ -43,7 +43,7 @@
  This score can later be used either to select only relevant information to be
  remembered, or to propose causal hypotheses in unusual situations, on demand.
  As such, the approach aims at being complementary to more traditional
- learning-focused techinques. We provide theoretical ground for our approach by
+ learning-focused techniques. We provide theoretical ground for our approach by
  using and extending existing results and ideas from Algorithmic Information
  Theory and provide an implementation example, showing practical results in a
  smart-home scenario.
@@ -55,34 +55,39 @@
 
 \section{Introduction}
 
-The ability to infer new causal relations is one of the many tasks in which
-humans prevail but machines still fall short of completing. This ability is
-prime in making discoveries, or acquiring new knowledge by making educated
-guesses.
+As the number of connected devices and sensors grows, so does the amount of
+produced data. As a consequence, the ability to filter out a few events from past recordings
+as ``memorable'' becomes prime. While this task is often overlooked by many
+statistical approaches, which instead benefit from large quantity of
+information, it is part of the learning process for humans
+\cite{dehaene_how_2020}. Faced with new situations, humans are prone to infer
+previously seen unusual events as possible causes, and carry out further testing
+to assess the existence of a causal relation.
 
-Without any knowledge about how physics or electricty work, it would be possible
-to infer a possible link between a memorable thunderstorm and a general
-black-out only by using the noticeability score of the first. While this kind of
-abductive inference can yield many false-positives, its application can be to
-propose new hypotheses to be tested out when other possible methods of inference
-fail to provide any hypothesis (due to a lack of prior similar situations, or to
-the importance of the context). The difficulty of this approach to reasoning is,
-however, to quickly identify the relevant candidate hypotheses. In this regards,
-we may use a basic instinct: without prior knowledge, the most relevant
-hypothesis might simply be the most memorable recent event. However this
-definition is highly subjective, and does not seem to fit well into the canvas
-of computing and AI.
+For instance, it is possible, for humans without any prior knowledge about
+physics or electrical engineering, to infer a memorable thunderstorm as a
+possible cause for a general black-out just by using the memorability of
+the former. While this kind of abductive inference (i.e. inference to the cause
+of an observation \cite{magnani_abduction_2011}) can yield many
+false-positives, it can be considered in situations where the lack of knowledge
+from previous occurrences penalizes other approaches.
 
-The difficulty of this computation comes from different factors. First, events
-can be of different nature, and not directly comparable. In fact, for the use
-case of smart homes, or other cyber physical systems, events range from device
-removal to a detected presented or an unusually high temperature. How can one
-can then assess which ones are more memorable? Furhtermore, even for comparable
-events, different characterics can be put forward to argue for the most
-memorable: is a record-high temperature 47 days ago more memorable than the
-small deviation recorded just 3 minutes ago? To this day, no current system
-proposes to use all this information from various event types from different
-devices to compute a unified metrics of ``memorability''.
+% The difficulty of this approach to reasoning is, however, to quickly identify
+% the relevant candidate hypotheses. In this regards, we may use a basic
+% instinct: without prior knowledge, the most relevant hypothesis might simply be
+% the most memorable recent event. However this definition is highly subjective,
+% and does not seem to fit well into the canvas of computing and AI.
+
+This kind of abduction seems however hard to translate into machine, as the difficulty
+comes from different factors. First, events can be of different nature, and not
+directly comparable. In fact, even for specific systems such as smart homes,
+events range from device removal to a presence detection or an unusually high
+temperature. How can one can then assess which ones are more memorable?
+Furthermore, even for comparable events, different characteristics can be put
+forward to argue for the most memorable: is a record-high temperature 47 days
+ago more memorable than the small deviation recorded just 3 minutes ago? To this
+day, no current system proposes to use all this information from various event
+types from different devices to compute a unified metrics of ``memorability''.
 
 % The difficulty of doing so comes from the wide variety of events, parameters and
 % characteristics to take into account. How can one assess if a small recent
@@ -92,20 +97,17 @@ devices to compute a unified metrics of ``memorability''.
 % presence sensors to humidity and temperature sensors, power meters, etc. To this
 % day, no current system proposes to analyze all events coming from such various
 % devices and come to a unified metrics of ``memorability''.
-%
 
-To tackle this challenge, we propose to refer to events using a technique used
-by humans: naming. It appears that humans are able to name events and describe
-them, regardless of their nature or their characteristics. Furthermore, there is
-a noticeable correlation between the lenght of the description, in terms of the
-complexity of concepts and arguments, and the ``memorability'' of the event.
-Think, for instance, of how ``last year's hottest day'' appears simpler than
-``the 182th day of 7 years ago''. Using this method, the day described by the
-first sentence would be deemed simpler than the target of the second
-description. By comparing the description length of the event with the average
-description lenght of similar events, one would then have a measure of the
-``memorability'' of events, as memorable events stands out as much simpler (or
-more complex) than their neighbours.
+To tackle this challenge, we use as a starting point the observation that while
+all events, regardless of their characteristics or nature, can be uniquely
+described using a combination of qualifiers, the most memorable ones are likely
+to require less words to be described. Think, for instance, of ``last year's
+hottest day'' and ``the 182th day of 7 years ago''. By evaluating the lenght of
+each description, taking into account both the complexity of concept words (a
+time ranking, a temperature ranking), and the arguments used in both
+descriptions (the hottest, the 182th, 7), we can assign each event a complexity
+score. Memorable events, as they stand out, would then differ from their
+neighbors by being much simpler (or more complex).
 
 % A possible approach would be to rely on the naming complexity of events:
 % memorable events are more likely to be shorter to be named than boring usual
@@ -122,30 +124,34 @@ more complex) than their neighbours.
   \includegraphics[width=\linewidth]{figures/filters}
   \caption{An example of retrieving an event through successive predicative
     filters. From the base memory (yellow), successive filters select the events
-    satisfying their predicates (grey arrows). The operations yields successive
+    satisfying their predicates (gray arrows). The operations yields successive
     subsets of the memory (yellow), until a final singleton memory is reach,
     meaning that the successive filters retrieve a unique event from the memory.
-    The predicates used for this retrival path and their arguments,
+    The predicates used for this retrieval path and their arguments,
     $\pi_{1}, \pi_{2}, \pi_{3}, k_{1}, k_{2}, k_{3}$, can be used as a retrieval
     program. Its length gives an upper bound to the description complexity of
     the event $e_{h}$: ``last year's hottest day''.}
   \label{fig:filters}
 \end{figure}
 
-To programatically achieve what humans are easily capable to do, we rely on a
-basic model intuition of how memory works. Figure \ref{fig:filters} shows this
-process for the example description ``last year's hottest day''. We assume that
+To programmatically achieve this computation, we rely on principles from
+Algorithmic Information Theory, which provides formal definitions of complexity
+and simplicity of objects, which appear to be consistent with human perception
+\cite{li_introduction_2008, dessalles2011coincidences, delahaye_numerical_2012}.
+ Figure \ref{fig:filters} shows our solution applied to the example description
+ ``last year's hottest day''. We assume that
 a memory $\mathcal{M}$ is a unordered set of various distinct objects, upon
-which can be applied boolean predicates $\pi$ to describe them. These predicates thus
-provide filters $f_{\pi}$ that can be applied to the memory, selecting all events
-satifying predicate $\pi$. By applying successive
+which can be applied boolean predicates $\pi_{k}$ to describe them. These predicates thus
+provide filters $f_{\pi, k}$ that can be applied to the memory, selecting all events
+satisfying predicate $\pi_{k}$. By applying successive
 filters, we narrow down the size of the memory, until a single event remains.
-The complexity of this remaining events can thus be estimated as the simplest
-combination of predicative filters used to retrieve it.
+All the successive filters used to come to this singleton memory constitutes a
+\emph{retrieval path}, whose length, in bits, gives an upper bound of the
+description complexity of the retrieved event.
 
 The rest of this paper is organized as follows: we first briefly introduce some notions of
 Algorithmic Information Theory and its applications in section~\ref{sec:theory},
-then we explicit our methods of computing the unnexpectedness of past events in
+then we explicit our methods of computing the unexpectedness of past events in
 cyber-physical systems~\ref{sec:computing}. We illustrate this approach by
 providing an implementation relying on a few predicates on events from a smart
 home simulation~(section \ref{sec:example}). In section~\ref{sec:related} we briefly
@@ -155,11 +161,11 @@ extensions of our work in section \ref{sec:future}
 
 \section{Theoretical Background}
 \label{sec:theory}
-Kolmorov complexity formally quantifies the amount of information required
-for the computation of a finite binary string\footnote{While the defintion still
-holds for some inifinite binary strings (think of the representation of the
+Kolmogorov complexity formally quantifies the amount of information required
+for the computation of a finite binary string\footnote{While the definition still
+holds for some infinite binary strings (think of the representation of the
 decimals of $\pi$), we restrict ourselves to finite strings in this paper.} (or
-any object represented by a finite bynary
+any object represented by a finite binary
 string)\cite{kolmogorov_three_1965,li_introduction_2008}. For such a binary
 string $s$, its complexity $K(s)$, is the bit length of the shortest program $p$
 which, if given as input to a universal Turing Machine $U$, outputs $s$.
@@ -167,6 +173,7 @@ which, if given as input to a universal Turing Machine $U$, outputs $s$.
   \label{eq:kolmo_def}
   K_{U}(s) = \min_{p}\left\{l(p)|U(p)=s\right\}
 \end{equation}
+
 The first notable property of this definition is its universality: while the
 choice of the Turing machine $U$ used for the computations appears in the
 definition of eq. \ref{eq:kolmo_def}, all results stand, up to an additional
@@ -178,6 +185,7 @@ finite program $p_{U}$, we have the following inequality:
   \label{eq:inequality_univ}
   K_{U}(s) \le l(p_{u}) + K_{U}(s)
 \end{equation}
+
 From this first result, we can then define a universal complexity $K(s)$, which
 no longer depends on the choice of a Turing machine $U$, such that, for any
 machine $U$,
@@ -187,7 +195,7 @@ machine $U$,
 where the additional constant $C_{U}$ does not depend on the object $s$.
 
 It is important to note that the notion of Kolmogorov complexity is not related
-to the computation complexity, as there is no requirement on the execution time
+to computation complexity, as there is no requirement on the execution time
 of the programs, only their length in bits matters for the computation of
 complexity. In fact, it can be shown that Kolmogorov complexity is not
 computable\cite{li_introduction_2008}. The sketch of the proof is the following:
@@ -200,45 +208,53 @@ undecidable, by extension, the computation of Kolmogorov complexity is
 impossible. One can however easily approximate it with upper bounds, by
 exhibiting a program outputting $s$.
 
-While the introducion of Kolmogorov complexity was purely theoretical, many
-applications were found, notably because of its close relation with the
-intuitive notions of the complexity of items, events, situations. For
-instance,~\cite{murena_solving_2020} studied the use of Kolmogorov Complexity to
-identify and solve analogies.
+Interestingly, Kolmogorov's definition of complexity matches the intuitive
+notion and perception of complexity from a human standpoint. For instance, the
+complexity of short binary strings evaluated in \cite{delahaye_numerical_2012}
+shows similar results to human perception of complex strings and patterns. More
+recently, \cite{murena_solving_2020} used Kolmogorov complexity to solve
+analogies and showed results close to human expectations.
 
-Algorithmic Information Theory is also used to define the notion of
-unexpectedness: in \cite{dessalles2011coincidences}, the unexpectedness $U(e)$
-of an event is defined as the difference between an a-priori expected causal
+This bridge between Algorithmic Information Theory and human perception of
+complexity is extended to define the notion of simplicity and unexpectedness,
+which are considered of uttermost importance in cognitive science\cite{chater_simplicity_2003}.
+\cite{dessalles2011coincidences} proposes a formal definition of the unexpectedness $U(e)$
+of an event, as the difference between an a-priori expected causal
 complexity $C_{w}(e)$ and the actual observed complexity $C(e)$.
 \begin{equation}
   \label{eq:unexpected}
   U(e) = |C_{w}(e) - C(e)|
 \end{equation}
-
 This result comes from the understanding that, while Kolmogorov complexity is
 computed with Turing machine, it can be used as an elegant proxy for modeling
 information processing in the human brain, and thus helps design a notion of
-simplicty or complexity of events\cite{}.
+simplicity or complexity of events.
 
 Using this measure, it is possible to model phenomenons such as coincidences:
-imagine that you happen to run into a friend in a park. The unnexpectedness will
-be much larger if this park is in Singapore than if it is in your common
-neighbourhood: the causal complexity $C_{w}$ is much higher if you a priori have
-no knowledge of your friend being around, while the description complexity
-remains the same.
+imagine that you happen to run into someone in a park. If this person is not
+noticeable, the event will be quite trivial. On the other hand, this person is
+your best friend, as the description complexity $C(e)$ drops, the causal
+complexity $C_{W}(e)$ remains unchanged, and the event becomes noticeable.
+
+Using these insights from AIT, we propose to measure the complexity of past
+events $e$ from a memory $\mathcal{M}$ by considering the quantity
+$K(e|\mathcal{M})$, that is the length of the shortest program outputting $e$,
+given the entire memory of past events $\mathcal{M}$ as an input. To limit the
+search and obtain a computable measure, we limit ourselves to only a subset of
+possible programs, which we will now describe.
 
 \section{Computing the unexpectedness of events}
 \label{sec:computing}
-\subsection{A memory model}
+\subsection{Retrieving an event}
 We model the memory as an unordered set $M$ of events $e$. Individual events can
 be seen as data points, augmented with a label indicating their nature
 (temperature events, failure events, addition/removal events), and a timestamp:
 \begin{equation}
   \label{eq:event}
-  e \equiv (l, t,\mathcal{D})
+  e = (l, t,\mathcal{D})
 \end{equation}
 where $l$ is the label, $t$ a timestamp and $\mathcal{D}$ a multi-dimensional
-datapoint representing various characteristics of the events (e.g.~its duration,
+data point representing various characteristics of the events (e.g.~its duration,
 the maximum temperature reached, the sensor name, its position).
 
 We define \emph{predicates} as boolean function operating on these events, and
@@ -265,40 +281,72 @@ For instance, using the same $\pi = \mathtt{year}$ and $k=1$ as above, we would
 build the filter $f_{\pi, k} = \mathtt{last\_{}year}$, which selects all events
 that occurred last year.
 
+As the output of a filter applied to the memory $\mathcal{M}$ is another memory
+object $\mathcal{M'} = f_{\pi, k}(\mathcal{M})$, we can compose filter
+functions. A sequence of such filters, applied in succession, is called a
+\emph{retrieval path}
+\begin{equation}
+\label{eq:ret_def}
+p = (f_{\pi_{1}, k_{1}}, \dots, f_{\pi_{n}, k_{n}})
+\end{equation}
+and by definition
+$p(\mathcal{M}) = f_{\pi_{n}, k_{n}}(\dots(f_{\pi_{1}, k_{1}}(\mathcal{M})))$.
+In case the result of the operation $p(\mathcal{M})$ contains a single element
+$e$, we say that the path $p$ \emph{retrieves} the element $e$ from $\mathcal{M}$, and write
+$p(\mathcal{M}) = e$.
+
 \subsection{Description complexity of events}
 
-From the previous definitions, we then estimate the complexity of events as the
-``simplest'' way of retrieving them from the memory, by applying successive
-filters. A retrieval path composed of various filters
-$p = f_{1} = f_{\pi_{1}, k_{1}}, f_{2} = f_{\pi_{2}, k_{2}}, \dots, f_{n} = f_{\pi_{n}, k_{n}}$
-is said to \emph{retrieve} an event $e$ from a memory $\mathcal{M}$ if and only
-if
-$p(\mathcal{M}) = f_{1} \circ f_{2} \circ \dots \circ f_{n} (\mathcal{M}) = \{e\}$.
-For an event $e$, if such a path exist, its complexity can be bounded by
-$K(p) = \sum_{f_{\pi, k} \in p} l(\pi) + l(k)$, the complexity of the retrieval
-path being the sum of the bit lengths required to describe the predicates $\pi$
-and their arguments $k$.
+% From the previous definitions, we then estimate the complexity of events as the
+% ``simplest'' way of retrieving them from the memory, by applying successive
+% filters. A retrieval path composed of various filters
+% $p = f_{1} = f_{\pi_{1}, k_{1}}, f_{2} = f_{\pi_{2}, k_{2}}, \dots, f_{n} = f_{\pi_{n}, k_{n}}$
+% is said to \emph{retrieve} an event $e$ from a memory $\mathcal{M}$ if and only
+% if
+% $p(\mathcal{M}) = f_{1} \circ f_{2} \circ \dots \circ f_{n} (\mathcal{M}) = \{e\}$.
+% For an event $e$, if such a path exist, its complexity can be bounded by
+% $K(p) = \sum_{f_{\pi, k} \in p} l(\pi) + l(k)$, the complexity of the retrieval
+% path being the sum of the bit lengths required to describe the predicates $\pi$
+% and their arguments $k$.
 
-The description complexity of an event $e$ can thus be defined as the minimum complexity of a retrieval path retrieving $e$:
+As presented in sec. \ref{sec:theory}, we are interested in computing the
+Kolmogorov complexity of an event $e$, conditionned on the memory $\mathcal{M}$.
+As this quantity is not computable, we use the previous definitions of retrieval
+paths and approximate the quantity $K(e|\mathcal{M})$ by the lenght of the
+shortest retrieval path $p$ retrieving $e$ from $\mathcal{M}$.
+
+Given that all predicate concepts can be described by a prefix program of length
+$l(\pi)$, and their arguments in length $l(k)$, each retrieval path $p$ can be
+described by the sequence of prefix description of all the predicate concepts and
+arguments used to construct its filters:
+
+\begin{equation}
+K(p) = l((f_{\pi_{1}, k_{1}}, \dots, f_{\pi{n}, k_{n}})) = \sum_{i=0}^{n} l(\pi_{i}) + l(k_{i})
+\end{equation}
+
+Using this definition of the lenght of a retrieval path, we can compute the
+estimation for the complexity $K(e|\mathcal{M})$, which, for clarity, we will
+denote simply by $K(e)$ for the rest of this paper.
 
 \begin{equation}
   \label{eq:desc_k}
-  K(e) = \min_{p | p(\mathcal{M}) = e} K(p) = \min_{p | p(\mathcal{M})=e} \sum_{f_{\pi, k} \in p} l(\pi) + l(k)
+  K(e) \approx \min_{p | p(\mathcal{M}) = e} K(p) = \min_{p | p(\mathcal{M})=e} \sum_{f_{\pi, k} \in p} l(\pi) + l(k)
 \end{equation}
 
 \begin{algorithm}
-  $\mathtt{current_{explore}} \leftarrow [\mathcal{M}]$ \;
+  $\mathtt{current_{explore}} \leftarrow [(\mathcal{M}, 0)]$ \;
   $\mathtt{future_{explore} \leftarrow} [\;]$ \;
   $\mathtt{pass} \leftarrow 0$ \;
+  $\mathtt{K(e)} \leftarrow +\infty$ \;
   \While{$\mathtt{current_{explore}} \neq [\;]$ \textbf{and} $\mathtt{pass} < \mathtt{max\_pass}$}{
     \For{$(\mathtt{M_{prev}}, \mathtt{K_{prev}}) \in \mathtt{current_{explore}}$}{
-      \For{$\mathtt{p \in \mathcal{P}}$}{
+      \For{$\mathtt{\pi \in \mathcal{P}}$}{
         \For{$\mathtt{k \in \{0,1\}^{*}}$}{
-          $\mathtt{K_{current} \leftarrow l(p) + l(k) + K_{prev}}$ \;
+          $\mathtt{K_{current} \leftarrow l(\pi) + l(k) + K_{prev}}$ \;
           \If{$\mathtt{K_{current}} > \mathtt{max_{complex}}$}{
             \textbf{break} \;
           }
-          $\mathtt{M'} \leftarrow f_{p,k}(\mathtt{M_{prev}})$ \;
+          $\mathtt{M'} \leftarrow f_{\pi,k}(\mathtt{M_{prev}})$ \;
           \eIf{$\mathtt{M'} = \mathtt{\{e\}}$}{
             $\mathtt{K(e) \leftarrow \min(K(e), K_{current})}$ \;
           }{
@@ -311,22 +359,22 @@ The description complexity of an event $e$ can thus be defined as the minimum co
     $\mathtt{future_{explore}} \leftarrow [\;]$ \;
     $\texttt{pass} \leftarrow \mathtt{pass} + 1$\;
   }
-  \caption{Iterative computation of the complexity}
+  \caption{Iterative computation of the approximate complexity}
   \label{alg:complex_iter}
 \end{algorithm}
 
 The definition used for description complexity in eq. \ref{eq:desc_k} allows for
-a direct implemenation, which is shown in alg. \ref{alg:complex_iter}. This
+a direct implementation, which is shown in alg. \ref{alg:complex_iter}. This
 algorithm operates iteratively: starting with the base memory $\mathcal{M}$
-(line 1), we apply all possible predicate concepts $\pi$ and programs $k$ (lines
-6-7), up to a given length $\mathtt{max\_len}$ bits, and apply them:
-$M' = f_{\pi, k}(M)$ (line 12). We then store the pairs
-$(M', \mathtt{len(}\pi, k\mathtt{)})$ in an array $\mathtt{future_{explore}}$. At
-the end of the iteration, the results of the filters become the memories which
-will be explored during the next iteration (lines 21--23). Each pass thus explore
-retrieval paths of increasing length. When a singleton memory is reached, the
-complexity of its unique element is upper-bounded with the length of the
-corresponding retrieval path (line 14).
+(line 1), we apply all possible predicate concepts $\pi$ from a given set
+$\mathcal{P}$ and programs $k$ (lines 6-7), up to a given length
+$\mathtt{max\_len}$ bits, and apply them: $M' = f_{\pi, k}(M)$ (line 12). We
+then store the pairs $(M', \mathtt{len(}\pi, k\mathtt{)})$ in an array
+$\mathtt{future_{explore}}$. At the end of the iteration, the results of the
+filters become the memories which will be explored during the next iteration
+(lines 21--23). Each pass thus explore retrieval paths of increasing length.
+When a singleton memory is reached, the complexity of its unique element is
+upper-bounded with the length of the corresponding retrieval path (line 14).
 
 
 \subsection{Computing an unexpectedness measure}
@@ -338,7 +386,7 @@ case, we may directly use the description complexity $K(e)$ as defined in
 
 The term $C_{w}(e)$ from eq. \ref{eq:unexpected} is harder to formally
 fit into our canvas. As $C_{w}$ is defined as the shortest program a
-``W-machine'' replicating the world's behaviour, based on the person's
+``W-machine'' replicating the world's behavior, based on the person's
 knowledge\cite{dessalles2011coincidences}, it is convenient to understand this
 term as the expectation one would have regarding the complexity of the event
 $e$, \emph{before} actually evaluating it.
@@ -357,7 +405,7 @@ N_{\pi}(e) = \{e'\in \mathcal{M}, \pi(e') \wedge e' \neq e\}
 \end{equation}
 
 Now, when considering, for all possible predicates $\pi$, the corresponding
-neighbourhoods $N_{\pi}(e)$, with the convention that $N_{\pi}(e) = \emptyset$
+neighborhoods $N_{\pi}(e)$, with the convention that $N_{\pi}(e) = \emptyset$
 if $\pi(e) = \bot$, we can compute an average expected complexity for $e$:
 
 \begin{equation}
@@ -370,8 +418,8 @@ K_{exp}(e) = \frac{
 \end{equation}
 
 The definition used for the expected complexity of the event $e$ in eq.
-\ref{eq:expected} holds the intuition of favorizing more similar events: if $e'$
-is \emph{very} similar to $e$, it will appear in many neighbouhoods, since it
+\ref{eq:expected} holds the intuition of favoring more similar events: if $e'$
+is \emph{very} similar to $e$, it will appear in many neighborhoods, since it
 satisfies mostly the same predicates as $e$. Therefore, its complexity term will
 be present in more terms in eq. \ref{eq:expected}, and will weight more towards
 the final result.
@@ -399,7 +447,7 @@ terms of program length, information about $e$ to predicates. This translates
 into considering relative order between events: when investigating a cause for
 an anomaly in the living-rooms, other anomalies occurring in the same
 living-room will be simpler, since the location ``living-room'' is already known
-from knowing the consequnce. In terms of predicates, we therefore append a
+from knowing the consequence. In terms of predicates, we therefore append a
 description of $e$ to all programs $k$ of predicates:
 $\pi_{k}(c) = \pi_{k::e}(c)$, where $::$ is the append operation.
 
@@ -415,8 +463,7 @@ This abduction score translates the additional information provided to the
 system when answering a user's request. As such, it encapsulates the idea
 presented as the motivation of this paper: when confronted to a surprising
 situation, and with no other source of information, it can be used as a metrics
-to find relevant posisble surprising causes to the observed consequence.
-
+to find relevant possible surprising causes to the observed consequence.
 
 \section{Implementation Example}
 \label{sec:example}
@@ -425,10 +472,10 @@ To test our approach, we set up an experimental smart home setup. This choice of
 configuration is motivated by the challenges posed by smart homes for abductive
 inference: i) as the number of connected devices increases, more events are
 recorded, making the detection of memorable events more important; ii) smart
-homes are prone to undergo atypical situations, highly dependant on the context,
+homes are prone to undergo atypical situations, highly dependent on the context,
 for which pre-established relations might fail to find good abduction
 candidates. Furthermore, the choice was also motivated by the ease of application: as
-previous works exist on smart homes, it is possible to simulate their behaviour
+previous works exist on smart homes, it is possible to simulate their behavior
 and quickly generate data to extract events from and test our methods.
 
 
@@ -467,7 +514,7 @@ duration of the simulation, of different kinds:
 
 \begin{itemize}
     \item Unusual weather: the outdoor conditions are set to unusually high or
-        low temeperatures.
+        low temperatures.
     \item Heater failures: heater can fail, making them turning off regardless
         of the command they receive.
     \item User's vacation: the user go out of the building for an extended
@@ -479,9 +526,11 @@ duration of the simulation, of different kinds:
 
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{figures/ts_example}
-  \caption{Time series data from the simulation: outdoor temperature and
-    controller temperature of a room. We can see two temperature drops, one for
-    each room. What could be the causes of these drops?}
+  \caption{Time series data from the simulation: outdoor temperature (blue) and
+    controller temperature of a room (blue). On different occasion, the
+    controlled temperature deviates from its setting (21°C). We will evaluate if
+  our system finds these deviations as memorable, and if it can propose causal
+  hypotheses.}
   \label{fig:ts_example}
 \end{figure}
 
@@ -495,8 +544,8 @@ the simulation run, and the resulting data, which an excerpt is shown in figure
 For the implementation of our method, we first needed to identify and
 characterize events from the time series data generated by the iCasa simulation.
 Since this is not the focus point of our present work (see sec.
-\ref{sec:related}), we simply apply threshold and precomputed conditions based
-detections to create a base of events.
+\ref{sec:related}), we simply apply threshold and pre-computed conditions based
+detection to create a base of events.
 
 This base of events consists the basis of the initial memory $\mathcal{M}$ used
 for computations.
@@ -506,17 +555,17 @@ We then implemented a small number of predicate concepts:
         $k^{th}$ in the memory.
         \item \texttt{rank(e, k)}: whether the event $e$ has the rank $k_{1}$
         along axis $k_{2}$, where $k$ is a unique encoding for $(k_{1}, k_{2})$.
-        \item \texttt{day(e, k)}: whether the event $e$ occured $k$ days ago.
-        \item \texttt{month(e, k)}: whether the event $e$ occured $k$ months
+        \item \texttt{day(e, k)}: whether the event $e$ occurred $k$ days ago.
+        \item \texttt{month(e, k)}: whether the event $e$ occurred $k$ months
         ago.
-        \item \texttt{location(e, k)}: whether the event $e$ occured in zone
+        \item \texttt{location(e, k)}: whether the event $e$ occurred in zone
         $k$.
 \end{itemize}
 
-With a straightforward implemention of memory, predicates and filters, the
+With a straightforward implementation of memory, predicates and filters, the
 implementation of alg. \ref{alg:complex_iter} worked, but, as expected, took too
 long to be usable in realistic scenarios with hundreds or thousands of events to
-consider. In order to facilitate and speed up computaitons, we also implemented
+consider. In order to facilitate and speed up computations, we also implemented
 the following improvements:
 \begin{itemize}
   \item The memory object was augmented with various built-in rankings, allowing
@@ -544,24 +593,25 @@ the following improvements:
 
 \subsubsection{Memorability}
 
-The results of the descritpion complexity evaluation, for the described setup,
+The results of the description complexity evaluation, for the described setup,
 are shown in fig. \ref{fig:computed_cplx}. The entire computation, over 4
 iterations (meaning that retrieval paths contained at most 4 filters), took
 around 30 seconds on a modern commercial laptop with an i7-8700u CPU.
 
 A main sequence of ``usual'' events, which complexity is roughly a logarithm of
-the elapsed time since their occurence, is visible. This corresponds to events
+the elapsed time since their occurrence, is visible. This corresponds to events
 for which the best retrieval path consists of a time description (e.g. ``2
 months and 12 days ago''). On the other hand, some events stand out in terms of
 complexity: some appear simpler, as they can be distinguished by using their
 rank alongside an axis (``the hottest day'', ``the second longest user's
-absence''), or the rare occurence of their kind (``the only fault on the heater'').
+absence''), or the rare occurrence of their kind (``the only fault on the heater'').
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{figures/complexities_computed}
   \caption{The computed complexities of events with at most retrieval paths of
-    length at most 4. Events of type ``day'' (blue), ``hot'' (green), ``cold'' (red) are shown.}
+    length at most 4. Events of type ``day'' (blue), ``hot'' (green), ``cold''
+    (red), ``device removal''(cyan) are shown.}
   \label{fig:computed_cplx}
 \end{figure}
 
@@ -569,14 +619,14 @@ Computing the ``memorability score'', which is shown in fig. \ref{fig:result1},
 highlights these aforementioned events from the main ``usual'' sequence. Since
 the computation of this measure treats unusually complex or simple events the
 same way (from the absolute value operation in eq. \ref{eq:unexpected}), we
-observe that some events are memorabale due to their context only. For instance,
+observe that some events are memorable due to their context only. For instance,
 a temperature anomaly occurring simultaneously to many other anomalies is
-notable, as it is costlier than expected to distinguish it from its neighbours.
+notable, as it is costlier than expected to distinguish it from its neighbors.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{figures/complexities_surprises}
-  \caption{Unnexpectedness score for events in the memory}
+  \caption{Memorability score for events in the memory}
   \label{fig:result1}
 \end{figure}
 
@@ -587,7 +637,7 @@ events. The result is presented as a ROC curve in fig. \ref{fig:roc}.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\linewidth]{example-image-a}
+  \includegraphics[width=\linewidth]{./figures/roc}
   \caption{Experimental ROC curve (True Positive Rate against False Positive Rate) for a
     classifier based on our memorability score.}
   \label{fig:roc}
@@ -595,7 +645,7 @@ events. The result is presented as a ROC curve in fig. \ref{fig:roc}.
 \subsubsection{Abduction}
 
 As an illustration of the abductive inference possible by using the memorability
-score, we used as a targed consequence the temperature drop visible in the raw
+score, we used as a target consequence the temperature drop visible in the raw
 time series data from our scenario (fig \ref{fig:ts_example}).
 
 % TODO
@@ -608,7 +658,7 @@ time series data from our scenario (fig \ref{fig:ts_example}).
 \section{Perspectives}
 \label{sec:future}
 The main purpose of the present paper is to show the possible connections
-between exising definitions of simplicity from cognitive science, Algorithmic
+between existing definitions of simplicity from cognitive science, Algorithmic
 Information Theory and a practical use case in cyber-physical systems. As such,
 many further improvements can be done to pave the way towards a better
 integration and performance for anomaly detection or abduction.
@@ -616,7 +666,7 @@ integration and performance for anomaly detection or abduction.
 First, the main limitation of the current approach is the requirement of
 predefined predicate concepts, from which the different filters are constructed.
 As an extension, we suggest that in the future, we could explore online
-generation of such predicate. A posisbility would be to analyze discriminating
+generation of such predicate. A possibility would be to analyze discriminating
 dimensions of incoming data and create predicate as to name these differences,
 similar to the contrast operations proposed in \cite{dessalles_conceptual_2015,
   gardenfors2004conceptual}. For instance, the predicate concept $\mathtt{hot}$
