@@ -149,14 +149,15 @@ All the successive filters used to come to this singleton memory constitutes a
 \emph{retrieval path}, whose length, in bits, gives an upper bound of the
 description complexity of the retrieved event.
 
-The rest of this paper is organized as follows: we first briefly introduce some notions of
-Algorithmic Information Theory and its applications in section~\ref{sec:theory},
-then we explicit our methods of computing the unexpectedness of past events in
-cyber-physical systems~\ref{sec:computing}. We illustrate this approach by
-providing an implementation relying on a few predicates on events from a smart
-home simulation~(section \ref{sec:example}). In section~\ref{sec:related} we briefly
-review other related works using complexity theory or trying to explain smart
-homes and how our work can be linked with them before exploring potential
+The rest of this paper is organized as follows: we first briefly introduce
+some notions of Algorithmic Information Theory and its applications in
+section~\ref{sec:theory}, then we explicit our methods of computing the
+unexpectedness of past events in cyber-physical systems~\ref
+{sec:computing}. We illustrate this approach by providing an implementation
+relying on a few predicates on events from a smart home simulation~
+(section \ref{sec:example}). In section~\ref{sec:related} we briefly review
+other related works using complexity theory or trying to explain smart homes
+and how our work can be linked with them before exploring potential
 extensions of our work in section \ref{sec:future}
 
 \section{Theoretical Background}
@@ -195,18 +196,18 @@ machine $U$,
 where the additional constant $C_{U}$ does not depend on the object $s$.
 
 It is important to note that the notion of Kolmogorov complexity is not related
-to computation complexity, as there is no requirement on the execution time
-of the programs, only their length in bits matters for the computation of
+to computation complexity, as there is no requirement on the execution time of
+the programs, only their length in bits matters for the computation of
 complexity. In fact, it can be shown that Kolmogorov complexity is not
-computable\cite{li_introduction_2008}. The sketch of the proof is the following:
-since the definition of complexity from eq. \ref{eq:kolm_def} requires to find
-the shortest of all programs on a given Turing machine outputting $s$, it
-requires to run all programs up to a given length and compare their result to
-$s$. However, being able to do so means that we would be able to tell whether
-these programs terminate. Since the termination of programs is famously
-undecidable, by extension, the computation of Kolmogorov complexity is
-impossible. One can however easily approximate it with upper bounds, by
-exhibiting a program outputting $s$.
+computable\cite{li_introduction_2008}. The sketch of the proof is the
+following: since the definition of complexity from eq. \ref
+{eq:kolm_def} requires to find the shortest of all programs on a given Turing
+machine outputting $s$, it requires to run all programs up to a given length
+and compare their result to $s$. However, being able to do so means that we
+would be able to tell whether these programs terminate. Since the termination
+of programs is famously undecidable, by extension, the computation of
+Kolmogorov complexity is impossible. One can however easily approximate it with
+upper bounds, by exhibiting a program outputting $s$.
 
 Interestingly, Kolmogorov's definition of complexity matches the intuitive
 notion and perception of complexity from a human standpoint. For instance, the
@@ -217,10 +218,12 @@ analogies and showed results close to human expectations.
 
 This bridge between Algorithmic Information Theory and human perception of
 complexity is extended to define the notion of simplicity and unexpectedness,
-which are considered of uttermost importance in cognitive science\cite{chater_simplicity_2003}.
-\cite{dessalles2011coincidences} proposes a formal definition of the unexpectedness $U(e)$
-of an event, as the difference between an a-priori expected causal
-complexity $C_{w}(e)$ and the actual observed complexity $C(e)$.
+which are considered of uttermost importance in cognitive science\cite
+{chater_simplicity_2003}.
+\cite{dessalles2011coincidences} proposes a formal definition of the
+ unexpectedness $U(e)$ of an event, as the difference between an a-priori
+ expected causal complexity $C_{w}(e)$ and the actual observed complexity $C
+ (e)$.
 \begin{equation}
   \label{eq:unexpected}
   U(e) = |C_{w}(e) - C(e)|
@@ -367,15 +370,14 @@ The definition used for description complexity in eq. \ref{eq:desc_k} allows for
 a direct implementation, which is shown in alg. \ref{alg:complex_iter}. This
 algorithm operates iteratively: starting with the base memory $\mathcal{M}$
 (line 1), we apply all possible predicate concepts $\pi$ from a given set
-$\mathcal{P}$ and programs $k$ (lines 6-7), up to a given length
-$\mathtt{max\_len}$ bits, and apply them: $M' = f_{\pi, k}(M)$ (line 12). We
-then store the pairs $(M', \mathtt{len(}\pi, k\mathtt{)})$ in an array
-$\mathtt{future_{explore}}$. At the end of the iteration, the results of the
-filters become the memories which will be explored during the next iteration
-(lines 21--23). Each pass thus explore retrieval paths of increasing length.
-When a singleton memory is reached, the complexity of its unique element is
-upper-bounded with the length of the corresponding retrieval path (line 14).
-
+$\mathcal{P}$ and programs $k$ (lines 6-7), up to a given length $\mathtt
+{max\_len}$ bits, and apply them: $M' = f_{\pi, k}(M)$ (line 12). We then store
+the pairs $(M', \mathtt{len(}\pi, k\mathtt{)})$ in an array $\mathtt{future_
+{explore}}$. At the end of the iteration, the results of the filters become the
+memories which will be explored during the next iteration(lines 21--23). Each
+pass thus explore retrieval paths of increasing length. When a singleton memory
+is reached, the complexity of its unique element is upper-bounded with the
+length of the corresponding retrieval path (line 14).
 
 \subsection{Computing an unexpectedness measure}
 Equation \ref{eq:unexpected} gives a universal definition of unexpectedness, as
@@ -423,7 +425,6 @@ is \emph{very} similar to $e$, it will appear in many neighborhoods, since it
 satisfies mostly the same predicates as $e$. Therefore, its complexity term will
 be present in more terms in eq. \ref{eq:expected}, and will weight more towards
 the final result.
-
 
 \subsection{From memorability to abduction}
 % On peut étendre la définition utilisée pour la surprise en faisant intervenir
@@ -638,8 +639,10 @@ events. The result is presented as a ROC curve in fig. \ref{fig:roc}.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{./figures/roc}
-  \caption{Experimental ROC curve (True Positive Rate against False Positive Rate) for a
-    classifier based on our memorability score.}
+  \caption{Experimental ROC curve (True Positive Rate against False Positive
+   Rate) for a classifier based on our memorability score. Measures consider 23
+   manually flagged events as memorable (events added to the background noise
+   as described in Section~\ref{sec:example}.)}
   \label{fig:roc}
 \end{figure}
 \subsubsection{Abduction}
@@ -653,7 +656,32 @@ time series data from our scenario (fig \ref{fig:ts_example}).
 
 \section{Related Works}
 \label{sec:related}
-\textbf{TODO}
+Our work is intended to be integrated into larger-scale frameworks to monitor 
+and detect events in complex environment such as smart homes. In these works, the
+approach to smart homes is often regarded as self-organizing systems \cite{kramer_rigorous_2009,kounev_notion_2017}. As such, they present capacities of adaptation to new goals, 
+new components, new environment. A commonly used approach is the principle of 
+autonomic system, which minimizes user's intervention for management of the 
+system \cite{kounev_notion_2017,kephart_vision_2003}.
+
+We want to inscribe our work among other classical concurrent approaches to 
+abduction. In situations where more data is available, we could for instance rely
+on correlation or causal inference from known relations \cite{peters_elements_2017,fadiga_or_2021}.
+Previous relations between inference and complexity have been studied. In fact, the 
+case of inference was one of the motivations for R. Solomonoff to introduce his 
+universal algorithmic probability \cite{solomonoff_formal_1964} as a tool to 
+reach an idealized inference machine, creating the notion of complexity concomitantly 
+to Kolmogorov. Subsequently, notions of complexity re-emerged in causal inference: 
+\cite{janzing_causal_2010} found, when a causal link exists between two random variables,
+considering the direct joint probability is simpler, in terms of Kolmogorov complexity, 
+than the inverse direction.
+
+The topic of finding events from streams of time series data has already been explored in many ways. 
+\cite{aggarwal_outlier_2017} provides good review of modern approaches and techniques
+in the field.
+
+While all these works advocate in favor of a strong link between complexity and the 
+discovery of causes, not other works extends the notion up to the point we propose in this
+work, using complexity only as a tool for inference. 
 
 \section{Perspectives}
 \label{sec:future}
