@@ -12,9 +12,8 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
-
 \title{
-  What should I notice? Evaluating memorability of events to generate surprising causal candidates.
+  What should I notice? Evaluating memorability of events for abductive inference.
 }
 \author{
   \IEEEauthorblockN{
@@ -55,22 +54,51 @@
 
 \section{Introduction}
 
-As the number of connected devices and sensors grows, so does the amount of
-produced data. As a consequence, the ability to filter out a few events from past recordings
-as ``memorable'' becomes prime. While this task is often overlooked by many
-statistical approaches, which instead benefit from large quantity of
-information, it is part of the learning process for humans
-\cite{dehaene_how_2020}. Faced with new situations, humans are prone to infer
-previously seen unusual events as possible causes, and carry out further testing
-to assess the existence of a causal relation.
+% As the number of connected devices and sensors grows, so does the amount of
+% produced data. As a consequence, the ability to filter out a few events from past recordings
+% as ``memorable'' becomes prime. While this task is often overlooked by many
+% statistical approaches, which instead benefit from large quantity of
+% information, it is part of the learning process for humans
+% \cite{dehaene_how_2020}. Faced with new situations, humans are prone to infer
+% previously seen unusual events as possible causes, and carry out further testing
+% to assess the existence of a causal relation.
 
-For instance, it is possible, for humans without any prior knowledge about
-physics or electrical engineering, to infer a memorable thunderstorm as a
-possible cause for a general black-out just by using the memorability of
-the former. While this kind of abductive inference (i.e. inference to the cause
-of an observation \cite{magnani_abduction_2011}) can yield many
-false-positives, it can be considered in situations where the lack of knowledge
-from previous occurrences penalizes other approaches.
+
+As a user has just turned on the TV in her all-equipped living-room, the
+lights dim and the window blinds lower. Intrigued by this behavior, she
+quickly infers that both light dimming and the blinds closing occurred as a
+consequence of the TV being turned on. How did she come to this conclusion?
+By performing \emph{abductive inference} \cite{magnani_abduction_2011}, which
+is a key element of human's ability to understand the world: from the
+observed consequences, infer the possible causes.
+
+In this example, there are mainly three possibilities to come to the
+conclusion. If the user knows how the smart living-room system works, if she
+knows the set of applied rules or parameters, she has access to a causal
+knowledge she can use for the abduction. Otherwise, if she has no knowledge
+about the system but the behavior occurs frequently, examining past
+correlations will reveal that the television frequently causes the blinds to
+close and the lights to dim. Else, if this is the first instance of the TV
+being turned on in this living-room, there is no previous occurrence upon
+which the user may rely to draw conclusions. However, she remains able to
+infer the TV as a possible cause for the observed reaction: by noticing the
+TV as a memorable recent event (since it is its first occurrence), she
+proposes it as a possible cause for the questioned phenomenon. This example
+shows how humans are able to use distinct methods to perform abductive tasks
+and infer new knowledge. While abduction of the first two kinds can be
+automated using knowledge bases and statistical approaches, this paper
+proposes an approach to evaluate the memorability of events, allowing
+machines to perform ``memorability-based'' abduction.
+
+
+ % For instance, it is
+% possible, for humans without any prior knowledge about
+% physics or electrical engineering, to infer a memorable thunderstorm as a
+% possible cause for a general black-out just by using the memorability of
+% the former. While this kind of abductive inference (i.e. inference to the cause
+% of an observation \cite{magnani_abduction_2011}) can yield many
+% false-positives, it can be considered in situations where the lack of knowledge
+% from previous occurrences penalizes other approaches.
 
 % The difficulty of this approach to reasoning is, however, to quickly identify
 % the relevant candidate hypotheses. In this regards, we may use a basic
@@ -78,16 +106,17 @@ from previous occurrences penalizes other approaches.
 % the most memorable recent event. However this definition is highly subjective,
 % and does not seem to fit well into the canvas of computing and AI.
 
-This kind of abduction seems however hard to translate into machine, as the difficulty
-comes from different factors. First, events can be of different nature, and not
-directly comparable. In fact, even for specific systems such as smart homes,
-events range from device removal to a presence detection or an unusually high
+The difficulty of implementing this kind of abduction for machines comes from
+several factors. First, events can be of different nature, and not directly
+comparable. In fact, even for specific systems such as smart homes, events
+range from device removal to a presence detection or an unusually high
 temperature. How can one can then assess which ones are more memorable?
 Furthermore, even for comparable events, different characteristics can be put
 forward to argue for the most memorable: is a record-high temperature 47 days
-ago more memorable than the small deviation recorded just 3 minutes ago? To this
-day, no current system proposes to use all this information from various event
-types from different devices to compute a unified metrics of ``memorability''.
+ago more memorable than the small deviation recorded just 3 minutes ago? To
+this day, no current system proposes to use all this information from various
+event types from different devices to compute a unified metrics of
+``memorability''.
 
 % The difficulty of doing so comes from the wide variety of events, parameters and
 % characteristics to take into account. How can one assess if a small recent
@@ -98,16 +127,31 @@ types from different devices to compute a unified metrics of ``memorability''.
 % day, no current system proposes to analyze all events coming from such various
 % devices and come to a unified metrics of ``memorability''.
 
-To tackle this challenge, we use as a starting point the observation that while
-all events, regardless of their characteristics or nature, can be uniquely
-described using a combination of qualifiers, the most memorable ones are likely
-to require less words to be described. Think, for instance, of ``last year's
-hottest day'' and ``the 182th day of 7 years ago''. By evaluating the lenght of
-each description, taking into account both the complexity of concept words (a
-time ranking, a temperature ranking), and the arguments used in both
-descriptions (the hottest, the 182th, 7), we can assign each event a complexity
+% To tackle this challenge, we use as a starting point the observation that while
+% all events, regardless of their characteristics or nature, can be uniquely
+% described using a combination of qualifiers, the most memorable ones are likely
+% to require less words to be described. Think, for instance, of ``last year's
+% hottest day'' and ``the 182th day of 7 years ago''. By evaluating the lenght of
+% each description, taking into account both the complexity of concept words (a
+% time ranking, a temperature ranking), and the arguments used in both
+% descriptions (the hottest, the 182th, 7), we can assign each event a complexity
+% score. Memorable events, as they stand out, would then differ from their
+% neighbors by being much simpler (or more complex).
+
+To tackle this challenge, we rely on the following observation: while all
+events, regardless of their characteristics or nature, can be uniquely
+described using a combination of qualifiers, the most memorable ones are
+likely to require less words to be described. Think, for instance, of how
+``last year's hottest day'' and ``the 182nd day from 7 years ago'': the
+former seems simpler to describe. By evaluating the length of each
+description, taking into account both the complexity of concept words (a date
+of occurrence, a temperature ranking), and the arguments (the hottest, the
+182ndThis
+kind of inference, named \emph{abductive inference} \cite
+{magnani_abduction_2011}, is a key element of humans's ability to understand the world., 7) used in both descriptions, we can assign each event a \emph{description complexity}
 score. Memorable events, as they stand out, would then differ from their
-neighbors by being much simpler (or more complex).
+neighbors and require simpler and less numerous qualifiers to be
+unambiguously described. As such, they will stand out as simpler.
 
 % A possible approach would be to rely on the naming complexity of events:
 % memorable events are more likely to be shorter to be named than boring usual
@@ -121,33 +165,59 @@ neighbors by being much simpler (or more complex).
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\linewidth]{figures/filters}
+  \includegraphics[width=0.9\linewidth]{figures/filters}
   \caption{An example of retrieving an event through successive predicative
-    filters. From the base memory (yellow), successive filters select the events
-    satisfying their predicates (gray arrows). The operations yields successive
-    subsets of the memory (yellow), until a final singleton memory is reach,
-    meaning that the successive filters retrieve a unique event from the memory.
-    The predicates used for this retrieval path and their arguments,
-    $\pi_{1}, \pi_{2}, \pi_{3}, k_{1}, k_{2}, k_{3}$, can be used as a retrieval
-    program. Its length gives an upper bound to the description complexity of
-    the event $e_{h}$: ``last year's hottest day''.}
+   filters. From the base memory (yellow), successive filters select the
+   events satisfying the associated predicate (grey arrow). For example,
+   filter $f_1$ selects events from last year, i.e. which satisfy the
+   predicate $\mathtt{date}(event, 1\_year)$. In this case, successively
+   applying filters $f_1$, $f_2$ and $f_3$ yields a unique event $e_h$, last
+   year's hottest day. The complexity of this event can then be upper bounded
+   by the complexity of the three filters, since they give a unambiguous way
+   to describe the event in the memory.}
+   % their predicates (gray arrows). The
+   % operations yields successive subsets of the memory (yellow), until a final
+   % singleton memory is reach, meaning that the successive filters retrieve a
+   % unique event from the memory. The predicates used for this retrieval path
+   % and their arguments, $\pi_{1}, \pi_{2}, \pi_{3}, k_{1}, k_{2}, k_{3}$, can
+   % be used as a retrieval program. Its length gives an upper bound to the
+   % description complexity of the event $e_{h}$: ``last year's hottest
+   % day''.}
   \label{fig:filters}
 \end{figure}
 
-To programmatically achieve this computation, we rely on principles from
-Algorithmic Information Theory, which provides formal definitions of complexity
-and simplicity of objects, which appear to be consistent with human perception
-\cite{li_introduction_2008, dessalles2011coincidences, delahaye_numerical_2012}.
- Figure \ref{fig:filters} shows our solution applied to the example description
- ``last year's hottest day''. We assume that
-a memory $\mathcal{M}$ is a unordered set of various distinct objects, upon
-which can be applied boolean predicates $\pi_{k}$ to describe them. These predicates thus
-provide filters $f_{\pi, k}$ that can be applied to the memory, selecting all events
-satisfying predicate $\pi_{k}$. By applying successive
-filters, we narrow down the size of the memory, until a single event remains.
-All the successive filters used to come to this singleton memory constitutes a
-\emph{retrieval path}, whose length, in bits, gives an upper bound of the
-description complexity of the retrieved event.
+For machines to use description complexity to distinguish memorable events from others, we need a formal canvas and computation methods which coincide with human intuition . To do so, we rely on principles from Algorithmic Information Theory, which also appear to be consistent with the human perception of complexity\cite{li_introduction_2008,dessalles2011coincidences,delahaye_numerical_2012}. Our method is as follows: we
+consider events as being unordered elements from a base \emph{memory}. To
+reproduce the language features applicable to events, we use \emph
+{predicates}, i.e. functions assigning a boolean value to an event and
+eventual arguments. For instance, the predicate $\mathtt{date}
+(\cdot, 1\_year)$ assigns \emph{true} to events that occurred last year. Selecting
+all events, from the memory, that satisfy a given predicate corresponds to
+a \emph{filter} operation, and yields another memory, a subset of the former.
+This filtering operation can then be repeated, each iteration, selecting
+fewer events, until a singleton memory is reached, meaning that the sequence
+of predicates can \emph{retrieve} unambiguously the unique remaining event.
+The description complexity of this event can thus be upper-bounded by the
+number of bits required to describe the filters used in the retrieval
+process. Figure \ref{fig:filters} illustrates this evaluation for the event
+$e_h$: ``last year's hottest day''.
+
+
+
+% To programmatically achieve this computation, we rely on principles from
+% Algorithmic Information Theory, which provides formal definitions of complexity
+% and simplicity of objects, which appear to be consistent with human perception
+% \cite{li_introduction_2008, dessalles2011coincidences, delahaye_numerical_2012}.
+%  Figure \ref{fig:filters} shows our solution applied to the example description
+%  ``last year's hottest day''. We assume that
+% a memory $\mathcal{M}$ is a unordered set of various distinct objects, upon
+% which can be applied boolean predicates $\pi_{k}$ to describe them. These predicates thus
+% provide filters $f_{\pi, k}$ that can be applied to the memory, selecting all events
+% satisfying predicate $\pi_{k}$. By applying successive
+% filters, we narrow down the size of the memory, until a single event remains.
+% All the successive filters used to come to this singleton memory constitutes a
+% \emph{retrieval path}, whose length, in bits, gives an upper bound of the
+% description complexity of the retrieved event.
 
 The rest of this paper is organized as follows: we first briefly introduce
 some notions of Algorithmic Information Theory and its applications in

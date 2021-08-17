@@ -10,3 +10,6 @@ conference_101719.pdf
 conference-latex-template_10-17-19.zip
 .auctex-auto/
 .DS_Store
+*.sublime-workspace
+*.sublime-project
+paper.txt
