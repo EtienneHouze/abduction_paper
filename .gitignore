@@ -13,3 +13,7 @@ conference-latex-template_10-17-19.zip
 *.sublime-workspace
 *.sublime-project
 paper.txt
+paper.tex
+.vscode/settings.json
+.gitignore
+paper.synctex.gz

@@ -241,11 +241,12 @@ Nice to cite in the part that talks about such systems.},
 Seems very interesting and on topic, to read in details.},
 }
 
-@book{fadiga_or_2021,
+@inproceedings{fadiga_or_2021,
 	title = {To do or not to do: finding causal relations in smart homes},
 	author = {Fadiga, Kanvaly and Houzé, Etienne and Diaconescu, Ada and Dessalles, Jean-Louis},
 	year = {2021},
 	note = {\_eprint: 2105.10058},
+	booktitle = {202 IEEE International Conference on Autonomic Computing and Self-Organizing Systems (ACSOS)},
 }
 
 @article{janzing_causal_2010,
@@ -261,4 +262,97 @@ Seems very interesting and on topic, to read in details.},
 	annote = {In this paper, the authors find a correspondence between the independence of variables and the L complexity of the conditional...
 Interesting!},
 	file = {Janzing and Schölkopf - 2010 - Causal inference using the algorithmic Markov cond.pdf:/home/etienne/Zotero/storage/VTIFCSFR/Janzing and Schölkopf - 2010 - Causal inference using the algorithmic Markov cond.pdf:application/pdf},
+}
+
+@misc{dessalles_pisa_nodate,
+  title  = {The {Pisa} {Tower} effect},
+  url    = {https://simplicitytheory.telecom-paris.fr/Pisa.html},
+  author = {Dessalles, Jean-Louis}
+}
+
+@inproceedings{liu_isolation_2008,
+  author    = {Liu, Fei Tony and Ting, Kai Ming and Zhou, Zhi-Hua},
+  booktitle = {2008 Eighth IEEE International Conference on Data Mining},
+  title     = {Isolation Forest},
+  year      = {2008},
+  volume    = {},
+  number    = {},
+  pages     = {413-422},
+  doi       = {10.1109/ICDM.2008.17}
+}
+
+@article{hariri_extended_2021,
+  title   = {Extended {Isolation} {Forest}},
+  volume  = {33},
+  doi     = {10.1109/TKDE.2019.2947676},
+  number  = {4},
+  journal = {IEEE Transactions on Knowledge and Data Engineering},
+  author  = {Hariri, Sahand and Kind, Matias Carrasco and Brunner, Robert J.},
+  year    = {2021},
+  pages   = {1479--1489}
+}
+
+
+@inproceedings{marx_causal_2018,
+  title     = {Causal inference on multivariate and mixed-type data},
+  booktitle = {Joint {European} {Conference} on {Machine} {Learning} and {Knowledge} {Discovery} in {Databases}},
+  publisher = {Springer},
+  author    = {Marx, Alexander and Vreeken, Jilles},
+  year      = {2018},
+  pages     = {655--671},
+  annote    = {Authors try an approach close to a MDL.
+They propose a metrics based on MDL to infer the direction of a causal relation between variables X and Y. Their approach is new because they consider multivariate variables that are not necessarily sharing the same dimensions, etc.
+The encode each variable using a forest (a set of trees) model, and check which direction leads to the minimal cost.},
+  file      = {Marx and Vreeken - 2018 - Causal inference on multivariate and mixed-type da.pdf:/home/etienne/Zotero/storage/KIC4K74D/Marx and Vreeken - 2018 - Causal inference on multivariate and mixed-type da.pdf:application/pdf}
+}
+
+
+@inproceedings{tatti_finding_2008,
+  title     = {Finding good itemsets by packing data},
+  booktitle = {2008 {Eighth} {IEEE} {International} {Conference} on {Data} {Mining}},
+  publisher = {IEEE},
+  author    = {Tatti, Nikolaj and Vreeken, Jilles},
+  year      = {2008},
+  keywords  = {mdl, binary data},
+  pages     = {588--597},
+  annote    = {The authors describe the PACK method to find a binary tree description of data using MDL principles.
+ },
+  file      = {Tatti and Vreeken - 2008 - Finding good itemsets by packing data.pdf:/home/etienne/Zotero/storage/MWTF3KP2/Tatti and Vreeken - 2008 - Finding good itemsets by packing data.pdf:application/pdf}
+}
+
+
+@article{fadlallah_weighted-permutation_2013,
+  title   = {Weighted-permutation entropy: {A} complexity measure for time series incorporating amplitude information},
+  volume  = {87},
+  number  = {2},
+  journal = {Physical Review E},
+  author  = {Fadlallah, Bilal and Chen, Badong and Keil, Andreas and Príncipe, José},
+  year    = {2013},
+  pages   = {022911},
+  file    = {wieghted-permutation_entropy:/home/etienne/Zotero/storage/7HX46WJ2/wieghted-permutation_entropy.pdf:application/pdf}
+}
+
+
+@inproceedings{batista_complexity-invariant_2011,
+  title     = {A complexity-invariant distance measure for time series},
+  booktitle = {Proceedings of the 2011 {SIAM} international conference on data mining},
+  publisher = {SIAM},
+  author    = {Batista, Gustavo EAPA and Wang, Xiaoyue and Keogh, Eamonn J},
+  year      = {2011},
+  pages     = {699--710}
+}
+
+
+@inproceedings{hu_discovering_2011,
+  title     = {Discovering the intrinsic cardinality and dimensionality of time series using {MDL}},
+  booktitle = {2011 {IEEE} 11th {International} {Conference} on {Data} {Mining}},
+  publisher = {IEEE},
+  author    = {Hu, Bing and Rakthanmanon, Thanawin and Hao, Yuan and Evans, Scott and Lonardi, Stefano and Keogh, Eamonn},
+  year      = {2011},
+  pages     = {1086--1091},
+  annote    = {Very interesting.
+ 
+Tries to find the optimal discretization parameters as to minimize the description length of a TS.
+ 
+Good to cite, quite extensive results with different applications to real-life time series.}
 }
