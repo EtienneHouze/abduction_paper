@@ -581,8 +581,6 @@ Conditional memorability encapsulates the idea
 presented as the motivation of this paper: when confronted with a surprising
 situation, and in the absence of any other source of information, events that appear more memorable than others, with regards to the target event will be selected as potential causes. As such, our conditional memorability score provides a ranking that can be used for abductive inference.
 
-\textbf{TODO:} Mettre un passage ici pour dire que ça résoud le dilemne de la récence présenté dans l'intro
-
 This metrics answers the different problematics exposed in the introduction: by using a universal measure for complexity, bits, it allows to compare values from different dimensions. For instance, it solves the recency problem exposed above: is a big event a long time ago more memorable than a smaller one only a few minutes ago? The answer from conditional memorability is that "it depends". It depends on the complexity cost set for the predicates describing time and the magnitude of the event. These complexity costs should reflect the user's perception of the different dimensions (see Section \ref{sec:future}).
 
 
@@ -707,7 +705,29 @@ the following improvements:
 
 \subsection{Results}
 \label{sec:example}
-\subsubsection{Memorability}
+
+\subsubsection{The ``TV'' scenario:}
+\paragraph{Memorability}
+The computation of the description complexity measure for the 2400 events recorded in this scenario took around 90 seconds using an i7-8600u laptop. The resulting complexities, in Figure \ref{fig:scenar1_complexity}, clearly shows that TV events appear more simple than luminosity events. In fact, for most luminosity events, the complexity corresponds to the random choice complexity, 25 bits in this example. This pattern comes from the number of luminosity events per day, 24, is too high to consider the retrieval path $day(k) \rightarrow randomPick()$ simpler than $randomPick$ from the entire memory, except for the first more recent days, which appear simpler (on the right-hand side of Figure \ref{fig:scenar1_complexity})
+\begin{figure}
+    \centering
+    \includegraphics[width=.7\linewidth]{figures/memorability_scenar_1.png}
+    \caption{Description complexity for events recorded in the TV scenario. Luminosity events are shown in blue, TV events in green}
+    \label{fig:scenar1_complexity}
+\end{figure}
+\paragraph{Abduction}
+To show the potential application to abductive inference, we use our approach to the first scenario, to see if memorabilty alone can find the brand new TV to be a reasonable cause for the sudden low light.
+
+The result of our algorithm is given in Figure \ref{fig:abduction_res}. It shows that the system correctly identifies the TV as being the cause. The reason for this choice is that, since the tv's device ID is unique among all other events of type ``tv'', its description complexity is very low.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.8\linewidth]{./figures/abduction_1_results}
+    \caption{Outputs of the memorability-based abduction module. This represent the 3 events in the memory having the highest memorability score relative to the consequence event.}
+    \label{fig:abduction_res}
+\end{figure}
+\subsubsection{The ``temperature'' scenario:}
+\paragraph{Memorability}
 
 The results of the description complexity evaluation, for the described setup,
 are shown in fig. \ref{fig:computed_cplx}. The entire computation, over 4
@@ -724,10 +744,10 @@ absence''), or the rare occurrence of their kind (``the only fault on the heater
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{figures/complexities_computed}
+\includegraphics[width=.8\linewidth]{figures/complexities_computed}
     \caption{Computed description complexities of events with retrieval paths of
-        length at most 4. Events of type ``day'' (blue), ``hot'' (green), ``cold''
-        (red), ``device removal''(cyan) are shown.}
+length at most 4. Events of type ``day'' (blue), ``hot'' (green), ``cold''
+(red), ``device removal''(cyan) are shown.}
     \label{fig:computed_cplx}
 \end{figure}
 
@@ -741,7 +761,7 @@ noticeable, as it is costlier than expected to distinguish it from its neighbors
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{figures/complexities_surprises}
+\includegraphics[width=.8\linewidth]{figures/complexities_surprises}
     \caption{Memorability score for events in memory}
     \label{fig:result1}
 \end{figure}
@@ -749,31 +769,20 @@ noticeable, as it is costlier than expected to distinguish it from its neighbors
 Given that we generated the data used for this experiment, it is possible to
 flag all perturbation events from the usual daily events and evaluate how a
 detection based on ``memorability'' score would perform in distinguishing these
-events. The result is presented as a ROC curve in Figure \ref{fig:roc}.
+events. The result is presented as a ROC curve in Figure \ref{fig:roc}. This shows the memorability score's performance as a classifying tool for ``out-of-the norm'' events. In this example, memorability alone correctly identified 18 manually generated events with only 2 false-positives. While the direct application of memorability for classification or event detection is not within the scope of this paper (see Section \ref{sec:related} for complexity-based detection), this first result is on par with the motivation of memorability being in accordance with the intuitive notion.
 
-\textbf{TODO:} Il faudrait commenter la courbe
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{./figures/roc}
+\includegraphics[width=0.7\linewidth]{./figures/roc}
     \caption{Experimental ROC curve (True Positive Rate against False Positive
-        Rate) for a classifier based on our memorability score. Measures consider 23
-        manually flagged events as memorable (events added to the normal background
-        as described in Section~\ref{sec:example}.)}
+Rate) for a classifier based on our memorability score. Measures consider 23
+manually flagged events as memorable (events added to the normal background
+as described in Section~\ref{sec:example}.)}
     \label{fig:roc}
 \end{figure}
 \subsubsection{Abduction}
 
-To show the potential application to abductive inference, we use our approach to the first scenario, to see if memorabilty alone can find the brand new TV to be a reasonable cause for the sudden low light.
-
-The result of our algorithm is given in Figure \ref{fig:abduction_res}. It shows that the system correctly identifies the TV as being the cause. The reason for this choice is that, since the tv's device ID is unique among all other events of type ``tv'', its description complexity is very low.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=.8\linewidth]{./figures/abduction_1_results}
-    \caption{Outputs of the memorability-based abduction module. This represent the 3 events in the memory having the highest memorability score relative to the consequence event.}
-    \label{fig:abduction_res}
-\end{figure}
-
+\paragraph{Abduction}
 As an illustration of the abductive inference made possible our memorability
 score, we used as a target anomaly the temperature drops visible in the raw
 time series data from our scenario (fig \ref{fig:ts_example}).
@@ -823,11 +832,11 @@ discovery of causes, not other works extends the notion up to the point we propo
 
 \subsection{Perspectives}
 \label{sec:future}
-The main purpose of the present paper is to show the possible connections
-between existing definitions of simplicity from cognitive science, Algorithmic
-Information Theory and a practical use case in cyber-physical systems. As such,
-many further improvements can be done to pave the way towards a better
-integration and performance for anomaly detection or abduction.
+
+% L'utilisation d'une mesure unique de la mémorabilité d'événements de natures et caracteristiques diverses 
+% La mise en application pratique des notions théoriques de mémorabilité et mémorabilité relative nécessité des développements futurs. Dans cette section, nous en avons sélectionné 2 qui nous semblent, à ce jour, les plus préoccupants.
+The practical application of the theoretical notions of memorability and relative memorability requires future developments. In this section, we have selected two of them which seem to us, to date, the most challenging.
+
 
 First, the main limitation of the current approach is the requirement of
 predefined predicate concepts, from which the different filters are constructed.
@@ -856,7 +865,7 @@ events and help reducing the memory and computation cost of data-driven applicat
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
-The introduction of description complexity and the subsequent memorability measure allows to compare events of various types with different characteristics. As such, it provides a framework to discriminate peculiar events and outliers.
+The introduction of description complexity and the subsequent memorability measure allow to compare events of various types with different characteristics. As such, it provides a formal and generic framework to discriminate peculiar events and outliers.
 
 The computation being based on predicates, the memorability score is entirely dependent on their definitions. This can be seen as a caveat or a feature of our approach: it makes the measure subjective while enabling the consideration of user's preferences in the definition and choice of predicates. This consideration can be the topic of future research and open up potential applications.
 
