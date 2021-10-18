@@ -79,7 +79,7 @@
 %\newcommand{\orcidauthorB}{0000-0000-0000-000X} % Add \orcidB{} behind the author's name
 
 % Authors, for the paper (add full first names)
-\Author{Étienne Houzé $^{1,2}$*, Jean-Louis Dessalles $^{2}$, Ada Diaconescu$^{2}$ and David Menga $^{2}$}
+\Author{Étienne Houzé $^{1,2}$*, Jean-Louis Dessalles $^{2}$, Ada Diaconescu$^{2}$ and David Menga $^{1}$}
 
 % MDPI internal command: Authors, for metadata in PDF
 \AuthorNames{Firstname Lastname, Firstname Lastname and Firstname Lastname}
@@ -271,6 +271,7 @@ for the computation of a finite binary string\footnote{Though the definition
 any object represented by a finite binary
 string)\cite{kolmogorov_three_1965,li_introduction_2008}. The complexity $K(s)$ of a (finite) binary string is the length in bits of the shortest program $p$
 which, if given as input to a universal Turing Machine $U$, outputs $s$.
+
 \begin{equation}
     \label{eq:kolmo_def}
     K_{U}(s) = \min_{p}\left\{l(p)|U(p)=s\right\}
@@ -283,6 +284,7 @@ constant, if we change the machine. Think how any Turing-complete programming la
 be turned into any other language, using an interpreter or a compiler program. Since any
 Turing machine $U'$ can be emulated by $U$ from a
 finite program $p_{U}$, we have the following inequality:
+
 \begin{equation}
     \label{eq:inequality_univ}
     K_{U'}(s) \le l(p_{u}) + K_{U}(s)
@@ -290,9 +292,11 @@ finite program $p_{U}$, we have the following inequality:
 
 From this first result, we can then define complexity $K(s)$, based on the choice of a reference Turing machine, such that, for any other
 machine $U$ taken from the set $\text{TM}$ of Turing machines:
+
 \begin{equation}
     \forall U\in\text{TM}, \forall s, |K(s) - K_{u}(s)| \le C_{U}
 \end{equation}
+
 where the additional constant $C_{U}$ does not depend on $s$.
 
 Note that the notion of Kolmogorov complexity involves no requirement on the execution time of
@@ -317,6 +321,7 @@ which are sometimes regarded of uttermost importance in cognitive science\cite
 unexpectedness $U(e)$ of an event, as the difference between an a-priori
 expected causal complexity $K_{w}(e)$ and the actual observed complexity $K
     (e)$.
+
 \begin{equation}
     \label{eq:unexpected} U(e) = K_{w}(e) - K(e)
 \end{equation}
@@ -338,10 +343,12 @@ lower, the description complexity $K(e)$ drops while the causal complexity
 $K_W (e)$ remains unchanged. This is why this latter  event appears unexpected.
 
 Using these insights from AIT, we define the memorability $M(e)$ of an event as the absolute difference between the description complexity $K_d(e)$ of an event and its expected description complexity $K_{exp}(e)$:
+
 \begin{equation}
     \label{eq:memorability}
     M(e) = |K_{exp}(e) - K_d(e)|
 \end{equation}
+
 Contrary to the definition of unexpectedness from Equation \ref{eq:unexpected}, we use an absolute value: we do so to acknowledge the fact that events more complex than expected can be memorable as well\footnote{In the original paper \cite{dessalles2011coincidences}, exceptionally complex events are described by considering complexity itself as a way to describe the event: see ``the Pisa Tower effect''\cite{dessalles_pisa_nodate}}. In the next section, we define computational approximations for the description complexity $K_d$ and the expected complexity $K_{exp}$ of events.
 
 \subsection{Computing the memorability of events}
@@ -350,13 +357,16 @@ Contrary to the definition of unexpectedness from Equation \ref{eq:unexpected}, 
 
 %Computing the memorability of events begins with the introduction of formal definitions of events, how they are stored, how we can describe them and how these descriptions can be used to retrieve them.
 We define \emph{events} as data points augmented with a \emph{label} indicating their nature (temperature event, failure event, addition/removal of a device) and a timestamp of occurrence. Formally:
+
 \begin{equation}
     \label{eq:event}
     e = (l, t,\mathcal{D})
 \end{equation}
+
 where $l$ is the label, $t$ the timestamp and $\mathcal{D}$ a multidimensional data point representing the various characteristics of $e$: its duration, the maximum temperature reached, the sensor name, its position, etc. Labels can also be considered as classes of events, of which each event is a particular instance.
 
 To model how humans are able to describe events by using qualifiers, we use \emph{predicates}: Boolean functions operating on events and, possibly, additional parameters: $\pi(e, a_1, a_2, \dots, a_n) \mapsto \{O,1\}$ is a predicate of arity $n$ operating on event $e$. In the rest of this paper, we will prefer the equivalent notation $\pi(e, k) \mapsto \{0,1\}$, where $k$ is a binary string encoding the sequence of arguments $a_1, \dots, a_n$. Using this notation, the predicate $\pi$ becomes a boolean function operating on $\mathbf{E} \times \{0,1\}^*$:
+
 \begin{equation}
     \label{eq:predicate}
     \pi : \begin{cases}
@@ -364,6 +374,7 @@ To model how humans are able to describe events by using qualifiers, we use \emp
         (e, k)                        & \mapsto \pi_{k}(e)
     \end{cases}
 \end{equation}
+
 As an example of predicate, consider $\pi = \mathtt{year}$ and $k$ a string encoding the number $1$, thus
 constructing the predicate $\mathtt{year(}e, 1\mathtt{)}$, which tells whether
 the event $e$ occurred $1$ year ago.
@@ -371,6 +382,7 @@ the event $e$ occurred $1$ year ago.
 As events occur, they are stored in the  \emph{base memory} $M_0$. As they are not directly comparable, the memory $M_0$ can be considered as having the structure of an unordered set. We denote by $\mathcal{M}$ the subsets of $M_0$. By extension, elements of $\mathcal{M}$, i.e. subsets of $M_0$, are also called \emph{memories}.
 
 By applying a given predicate $\pi$ to all events contained in a memory $M \subseteq M_0$, and selecting only events satisfying $\pi$, one gets another memory $M_1 \subseteq M \subseteq M_0$. We call this operation a \emph{filter}:
+
 \begin{equation}
     \label{eq:filter}
     f_{\pi, k}: \begin{cases}
@@ -378,6 +390,7 @@ By applying a given predicate $\pi$ to all events contained in a memory $M \subs
         M           & \mapsto \{e \in M | \pi(e) \}
     \end{cases}
 \end{equation}
+
 For instance, using the same $\pi = \mathtt{year}$ and $k=1$ as above, we can
 build the filter $f_{\pi, k} = \mathtt{last\_{}year}$, which selects all events
 that occurred last year.
@@ -385,10 +398,12 @@ that occurred last year.
 As the output of a filter applied to a memory $M$ is another memory
 object $M' \subseteq M$, we can compose filter
 functions. A sequence of such filters is called a \emph{retrieval path}
+
 \begin{equation}
     \label{eq:ret_def}
     p = (f_{\pi_{1}, k_{1}}, \dots, f_{\pi_{n}, k_{n}})
 \end{equation}
+
 By definition
 $p(M) = f_{\pi_{n}, k_{n}}(\dots(f_{\pi_{1}, k_{1}}(M)))$.
 In case the result of the operation $p(M)$ contains a single element
@@ -405,6 +420,7 @@ As presented in sec. \ref{sec:theory}, we are interested in computing an approxi
 \end{equation}
 
 where the bit-length $L(p)$ of a retrieval path is defined as the number of bits of a string encoding the path. If we limit ourselves to prefix-free strings encoding predicates and arguments, the total bit length is given by:
+
 \begin{align}
     \label{eq:bit_lenght_p}
     L(p) & = L((f_{\pi_1,k_1}, \dots, f_{\pi_n, k_n}))     \\
@@ -578,8 +594,8 @@ duration of the simulation, of different kinds:
           low temperatures.
     \item Heater failures: heater may break down, making them turn off regardless
           of the command they receive.
-    \item User's absence: the user goes out of the building for an extended
-          period of time.
+    % \item User's absence: the user goes out of the building for an extended
+    %       period of time.
     \item Device removal/addition: a device is removed, or another one is added
           to the system.
 \end{itemize}
@@ -619,6 +635,7 @@ We implemented the computation of both the description complexity and the memora
 Similar predicates were used for scenario 1, with the notable exception of the addition of a \texttt{RandomPick} predicate, which is true if the id of the event matches a random program seed $k$. Using this predicate and the associated filter in only one of the two illustrative examples shows the importance of allowing random selection in the complexity computation. Furthermore, it could be argued that in some case, random selection of an event is not possible.
 
 The description length $L_{\pi, k}$ of using a predicate is computed as follows: since the set of predicates is finite and known, $L(\pi) = \log2(|\Pi|)$ are enough to describe the predicate concept $\pi$\footnote{This approach gives an equal complexity to all predicate concepts. While this could be argued when using many concepts, as humans do, we deemed better, for our small examples, to consider all concepts as equal.}. To encode the argument $k$ of the predicate, we used the prefix-free Elias delta code\cite{elias_universal_1975}, which requires $L(k) = \log2(k) + 2 \log2(\log2(k)+1) + 1]$ bits. The total cost of describing $\pi_{k}$ therefore is
+
 \begin{equation}
     \L(\pi, k) = \log2(|\Pi|) + \log2(k) + 2 \log2(\log2(k) + 1) + 1
 \end{equation}
@@ -654,13 +671,14 @@ the following improvements:
 
 \subsubsection{The ``TV'' scenario:}
 \paragraph{Memorability}
-The computation of the description complexity measure for the 2400 events recorded in this scenario took around 90 seconds using an i7-8600u laptop. The resulting complexities, in Figure \ref{fig:scenar1_complexity}, show that TV events appear more simple than luminosity events. In fact, for most luminosity events, the complexity corresponds to the random choice complexity, 25 bits in this example. This pattern comes from the number of luminosity events per day, 24, is too high to consider the retrieval path $day(k) \rightarrow randomPick()$ simpler than $randomPick$ from the entire memory, except for the first more recent days, which appear simpler (on the right-hand side of Figure \ref{fig:scenar1_complexity})
+The computation of the description complexity measure for the 2400 events recorded in this scenario took around 90 seconds using an i7-8600u laptop. The resulting complexities, in Figure \ref{fig:scenar1_complexity}, show that TV events appear more simple than luminosity events. In fact, for most luminosity events, the complexity corresponds to the random choice complexity, 25 bits in this example. This pattern comes from the number of luminosity events per day, 24, is too high to consider the retrieval path $day,  randomPick$ simpler than $randomPick$ from the entire memory, except for the most recent days, which appear simpler (on the right-hand side of Figure \ref{fig:scenar1_complexity})
 \begin{figure}
     \centering
     \includegraphics[width=.7\linewidth]{figures/memorability_scenar_1.png}
     \caption{Description complexity for events recorded in the TV scenario. Luminosity events are shown in blue, TV events in green}
     \label{fig:scenar1_complexity}
 \end{figure}
+
 \paragraph{Abduction}
 To show the potential application to abductive inference, we use our approach to the first scenario, to see if memorability alone can find the brand new TV to be a reasonable cause for the sudden low light.
 
@@ -690,17 +708,13 @@ The result of our algorithm is given in Table \ref{tab:abduction_res}. It shows 
 % \paragraph{Memorability}
 
 The results of the description complexity evaluation, for the described setup,
-are shown in fig. \ref{fig:computed_cplx}. The entire computation, over 4
+are shown in Figure \ref{fig:computed_cplx}. The entire computation, over 4
 iterations (meaning that retrieval paths contained at most 4 filters), took
 around 30 seconds on a commercial laptop with an i7-8700u CPU.
 
-The blue line emerges from a set of ``usual'' events, whose complexity varies as the logarithm of
-the elapsed time since their occurrence. It corresponds to events
-for which the best retrieval path consists of a time description (e.g. ``2
-months and 12 days ago''). As such, it appears that most days are considered usual by our memorability score: there is no better way to retrieve them than simply giving the day of their occurrence. On the other hand, some events stand out in terms of
+The general trend appears different from the ``TV example'' presented in Figure \ref{fig:scenar1_complexity} : instead of having a capped complexity score, a logarithmic trend appears. This phenomenon is due to the absence, in this example, of the \texttt{randomPick} predicate; instead, usual events, with outstanding particularity, can be retrieved by using the \texttt{day} predicate and a \texttt{label} predicate. As such, it appears that most days are considered usual by our memorability score, creating the main logarithmic sequence of blue dots: there is no better way to retrieve them than simply giving the day of their occurrence. On the other hand, some events stand out in terms of
 complexity: some appear simpler, as they can be distinguished by using their
-rank along some axis (``the hottest day'', ``the second longest user's
-absence''), or the rare occurrence of their kind (``the only fault on the heater'').
+rank along some axis (``the hottest day'', ``the second coldest day''), or the rare occurrence of their kind (``the only fault on the heater'').
 
 \begin{figure}[ht]
     \centering
