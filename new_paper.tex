@@ -209,26 +209,6 @@ our knowledge, no current system proposes to combine various
 event types from different devices to compute a unified metrics of
 ``memorability''.
 
-% The difficulty of doing so comes from the wide variety of events, parameters and
-% characteristics to take into account. How can one assess if a small recent
-% perturbation is more important than a larger but older one? In addition, one
-% needs a common metrics to evaluate the relative importance of data coming from
-% various devices. In the case of a smart home, for instance, devices range from
-% presence sensors to humidity and temperature sensors, power meters, etc. To this
-% day, no current system proposes to analyze all events coming from such various
-% devices and come to a unified metrics of ``memorability''.
-
-% To tackle this challenge, we use as a starting point the observation that while
-% all events, regardless of their characteristics or nature, can be uniquely
-% described using a combination of qualifiers, the most memorable ones are likely
-% to require less words to be described. Think, for instance, of ``last year's
-% hottest day'' and ``the 182th day of 7 years ago''. By evaluating the lenght of
-% each description, taking into account both the complexity of concept words (a
-% time ranking, a temperature ranking), and the arguments used in both
-% descriptions (the hottest, the 182th, 7), we can assign each event a complexity
-% score. Memorable events, as they stand out, would then differ from their
-% neighbors by being much simpler (or more complex).
-
 To address this issue, we started from the following intuition: while all
 events, regardless of their characteristics or nature, can be uniquely
 described using a combination of quantitative or qualitative qualifiers, the most memorable ones are
@@ -239,21 +219,12 @@ of occurrence, a temperature ranking), and of the arguments (1st hottest,
 of events. Our intuition is that memorable events require simpler and less numerous qualifiers to be
 unambiguously described than unremarkable ones.
 
-% A possible approach would be to rely on the naming complexity of events:
-% memorable events are more likely to be shorter to be named than boring usual
-% events. Think, for instance, of how ``last year's hottest day'' description
-% appears much simpler than ``the 182th day of 7 years
-% ago''\cite{robles_applications_2010}. Our idea is to rely on this metrics to
-% estimate the description complexity of events. Then, by comparing the
-% description complexity of a given event $e$ to the average complexity of similar
-% events, we induce a measure of unexpectedness that can be used to assess the
-% most memorable events.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{figures/filters}
     \caption{Retrieving an event through successive predicative
-        filters. From the base memory (yellow), successive filters select events satisfying the associated predicate (grey arrows). For example,
+        filters. From the base memory (yellow), successive filters select events satisfying the associated predicate (gray arrows). For example,
         filter $f_1$ selects events from last year, i.e. which satisfy the
         predicate $\mathtt{date}(event, 1\_year)$. In this case, successively
         applying filters $f_1$, $f_2$ and $f_3$ yields a unique event $e_h$, last
@@ -277,22 +248,6 @@ The description complexity of this event can thus be upper-bounded by the
 number of bits required to describe the filters used in the retrieval
 process. Figure \ref{fig:filters} illustrates this process for the event: ``last year's hottest day''.
 
-
-
-% To programmatically achieve this computation, we rely on principles from
-% Algorithmic Information Theory, which provides formal definitions of complexity
-% and simplicity of objects, which appear to be consistent with human perception
-% \cite{li_introduction_2008, dessalles2011coincidences, delahaye_numerical_2012}.
-%  Figure \ref{fig:filters} shows our solution applied to the example description
-%  ``last year's hottest day''. We assume that
-% a memory $\mathcal{M}$ is a unordered set of various distinct objects, upon
-% which can be applied boolean predicates $\pi_{k}$ to describe them. These predicates thus
-% provide filters $f_{\pi, k}$ that can be applied to the memory, selecting all events
-% satisfying predicate $\pi_{k}$. By applying successive
-% filters, we narrow down the size of the memory, until a single event remains.
-% All the successive filters used to come to this singleton memory constitutes a
-% \emph{retrieval path}, whose length, in bits, gives an upper bound of the
-% description complexity of the retrieved event.
 
 We will first briefly introduce
 some basic notions of Algorithmic Information Theory. Then, in
@@ -323,7 +278,7 @@ which, if given as input to a universal Turing Machine $U$, outputs $s$.
 
 The first notable property of this definition is its universality: while the
 choice of the Turing machine $U$ used for the computations appears in the
-definition of eq. \ref{eq:kolmo_def}, all results hold, up to an additional
+definition of Equation \ref{eq:kolmo_def}, all results hold, up to an additional
 constant, if we change the machine. Think how any Turing-complete programming language can
 be turned into any other language, using an interpreter or a compiler program. Since any
 Turing machine $U'$ can be emulated by $U$ from a
@@ -344,14 +299,6 @@ Note that the notion of Kolmogorov complexity involves no requirement on the exe
 programs, only their length in bits matters for the computation of
 complexity. Though Kolmogorov complexity can be shown to be
 incomputable\cite{li_introduction_2008},
-%The sketch of the proof is the
-%following: since the definition of complexity from Equation. \ref
-%{eq:kolmo_def} requires to find the shortest of all programs on a given Turing
-%machine outputting $s$, it requires to run all programs up to a given length
-%and compare their result to $s$. However, being able to do so means that we
-%would be able to tell whether these programs terminate. Since the termination
-%of programs is famously undecidable, by extension, the computation of
-%Kolmogorov complexity is impossible.
 it can be approximated with
 upper bounds by exhibiting a program outputting $s$.
 
@@ -407,7 +354,7 @@ We define \emph{events} as data points augmented with a \emph{label} indicating 
     \label{eq:event}
     e = (l, t,\mathcal{D})
 \end{equation}
-where $l$ is the label, $t$ the timestamp and $\mathcal{D}$ a multi-dimensional data point representing the various characteristics of $e$: its duration, the maximum temperature reached, the sensor name, its position, etc. Labels can also be considered as classes of events, of which each event is a particular instance.
+where $l$ is the label, $t$ the timestamp and $\mathcal{D}$ a multidimensional data point representing the various characteristics of $e$: its duration, the maximum temperature reached, the sensor name, its position, etc. Labels can also be considered as classes of events, of which each event is a particular instance.
 
 To model how humans are able to describe events by using qualifiers, we use \emph{predicates}: Boolean functions operating on events and, possibly, additional parameters: $\pi(e, a_1, a_2, \dots, a_n) \mapsto \{O,1\}$ is a predicate of arity $n$ operating on event $e$. In the rest of this paper, we will prefer the equivalent notation $\pi(e, k) \mapsto \{0,1\}$, where $k$ is a binary string encoding the sequence of arguments $a_1, \dots, a_n$. Using this notation, the predicate $\pi$ becomes a boolean function operating on $\mathbf{E} \times \{0,1\}^*$:
 \begin{equation}
@@ -548,8 +495,6 @@ be present in more terms in Equation \ref{eq:expected}, and will weigh more in
 the final result.
 
 \subsubsection{From memorability to abduction}
-% On peut étendre la définition utilisée pour la surprise en faisant intervenir
-% les prédicats'' `sympathiques` par rapport à ce que l'on questionne.
 Abductive inference builds on the computation
 of the memorability score. \emph{Knowing} that we want to find a cause $c$
 for an observed effect $e$, we try to find the most remarkable event in past
@@ -581,7 +526,7 @@ Conditional memorability encapsulates the idea
 presented as the motivation of this paper: when confronted with a surprising
 situation, and in the absence of any other source of information, events that appear more memorable than others, with regards to the target event will be selected as potential causes. As such, our conditional memorability score provides a ranking that can be used for abductive inference.
 
-This metrics answers the different problematics exposed in the introduction: by using a universal measure for complexity, bits, it allows to compare values from different dimensions. For instance, it solves the recency problem exposed above: is a big event a long time ago more memorable than a smaller one only a few minutes ago? The answer from conditional memorability is that "it depends". It depends on the complexity cost set for the predicates describing time and the magnitude of the event. These complexity costs should reflect the user's perception of the different dimensions (see Section \ref{sec:future}).
+This metrics answers the different problems exposed in the introduction: by using a universal measure for complexity, bits, it allows to compare values from different dimensions. For instance, it solves the dilemma of recent events: is a big event a long time ago more memorable than a smaller one only a few minutes ago? The answer from conditional memorability is that "it depends". It depends on the complexity cost set for the predicates describing time and the magnitude of the event. These complexity costs should reflect the user's perception of the different dimensions (see Section \ref{sec:future}).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -599,11 +544,11 @@ candidates. Our choice was also motivated by
 the existence of previous work involving smart home simulations capable of quickly generating data from which we could extract events and test our methods.
 
 \subsubsection{Scenario 1}
-In this setup, we aim to reproduce the example mentioned in Section \ref{sec:introduction}: the installation of a brand new smart tv causes unpredicted effects on the light of a room.
-To play this situation, we created a set of events covering a period of 100 days, corresponding to the past knowledge of the house. Two kinds of events are recorded: ``tv event'', corresponding to TV use, and luminosity events, describing the luminosity of the room at a given time. Low lights occur at night, and can occasionally occur during daytime, with a small probability. On the 100\textsuperscript{th} day, a ``tv event'' is recorded with a different ``device'' characteristic. Shortly after, the light lowers, which is recorded in the following ``light'' event.
+In this setup, we aim to reproduce the example mentioned in Section \ref{sec:introduction}: the installation of a brand new smart TV causes unpredictable effects on the light of a room.
+To play this situation, we created a set of events covering a period of 100 days, corresponding to the past knowledge of the house. Two kinds of events are recorded: ``TV event'', corresponding to TV use, and luminosity events, describing the luminosity of the room at a given time. Low lights occur at night, and can occasionally occur during daytime, with a small probability. On the 100\textsuperscript{th} day, a ``TV event'' is recorded with a different ``device'' characteristic. Shortly after, the light lowers, which is recorded in the following ``light'' event.
 
 \subsubsection{Scenario 2}
-We considere here an experimental smart home setup, with various sensors, which we simulate over a period of time
+We consider an experimental smart home setup, with various sensors, which we simulate over a period of time
 To carry out the simulation, we built custom modules into the existing iCasa
 smart home simulator\cite{lalanda_self-aware_2017}. ICasa
 offers a simulation of autonomic systems that can handle internal communications,
@@ -615,7 +560,7 @@ with a temperature controller system that monitors and controls heaters (fig.
 
 \begin{figure}[ht]
     \centering
-\includegraphics[width=.8\linewidth]{figures/simulator}
+    \includegraphics[width=.8\linewidth]{figures/simulator}
     \caption{View of the simulator's web interface provided by iCasa. The four
         rooms are visible, with their equipment and the user.}
     \label{fig:view}
@@ -643,10 +588,8 @@ duration of the simulation, of different kinds:
 \begin{figure}[ht]
     \includegraphics[width=\linewidth]{figures/ts_example}
     \caption{Time series data from the simulation: outdoor temperature (blue) and
-        controller temperature of a room (orange). On different occasion, the
-        controlled temperature deviates from its setting (21°C). We will evaluate if
-        our system finds these deviations as memorable, and if it can turn them into relevant causal
-        hypotheses for current anomalies.}
+        controller temperature of a room (orange). To be used in our framework, these time series data are
+        processed by a simple threshold-based event detection.}
     \label{fig:ts_example}
 \end{figure}
 
@@ -655,25 +598,27 @@ the simulation run. The resulting data (figure
 \ref{fig:ts_example}) was then used as a basis for our experiments.
 We then process the time series data to identify and characterize events.
 Since the selection of events is not the focus point of our present work (see sec.
-\ref{sec:related}), we perform event detection merely based on threshold and pre-computed conditions.
+\ref{sec:related}), we perform event detection merely based on threshold and precomputed conditions.
 
 
 \subsection{Implementing the complexity computation}
 
-We implemented the computation of both the descritpion complexity and the memorability score into a Python object, called the \texttt{SurpriseAbductionModule}. Apart from the base memory of events $M_0$, this module contains a set of predifined predicates $\Pi$ to characterize events. For instance, for scenario 2, the predicates we use are the following:
+We implemented the computation of both the description complexity and the memorability score into a Python object, called the \texttt{SurpriseAbductionModule}. Apart from the base memory of events $M_0$, this module contains a set of predefined predicates $\Pi$ to characterize events. For instance, for scenario 2, the predicates we use are the following:
 \begin{itemize}
     \item $\mathtt{label(e, k)}$: whether the event $e$ has the label ranked
           $k^{th}$ in the label list.
     \item $\mathtt{rank(e, r, a)}$: whether the event $e$ has the rank $r$
           along axis $a$.
     \item $\mathtt{day(e, k)}$: whether the event $e$ occurred $k$ days ago.
-    \item $\mathtt{month(e, k)}$: whether the event $e$ occurred $k$ months
-          ago.
+    % \item $\mathtt{randomChoice(e, k)}$: whether the event $e$ id matches the program $k$, which can be regarded as a random seed.
+    \item $\mathtt{month(e, k)}$: whether the event $e$ occured $k$ months ago.
     \item $\mathtt{location(e, k)}$: whether the event $e$ occurred in zone
           $k$.
 \end{itemize}
 
-The description length $L_{\pi, k}$ of using a predicate is computed as follows: since the set of predicates is finite and known, $L(\pi) = \log2(|\Pi|)$ are enough to describe the predicate concept $\pi$\footnote{This approach gives an equal complexity to all predicate concepts. While this could be argued when using many concepts, as humans do, we deemed better, for our small examples, to consider all concepts as equal.}. To encode the argument $k$ of the predicate, we used the prefix-free Elias delta code, which requires $L(k) = \log2(k) + 2 \log2(\log2(k)+1) + 1]$ bits. The total cost of decribing $\pi_{k}$ therefore is
+Similar predicates were used for scenario 1, with the notable exception of the addition of a \texttt{RandomPick} predicate, which is true if the id of the event matches a random program seed $k$. Using this predicate and the associated filter in only one of the two illustrative examples shows the importance of allowing random selection in the complexity computation. Furthermore, it could be argued that in some case, random selection of an event is not possible.
+
+The description length $L_{\pi, k}$ of using a predicate is computed as follows: since the set of predicates is finite and known, $L(\pi) = \log2(|\Pi|)$ are enough to describe the predicate concept $\pi$\footnote{This approach gives an equal complexity to all predicate concepts. While this could be argued when using many concepts, as humans do, we deemed better, for our small examples, to consider all concepts as equal.}. To encode the argument $k$ of the predicate, we used the prefix-free Elias delta code\cite{elias_universal_1975}, which requires $L(k) = \log2(k) + 2 \log2(\log2(k)+1) + 1]$ bits. The total cost of describing $\pi_{k}$ therefore is
 \begin{equation}
     \L(\pi, k) = \log2(|\Pi|) + \log2(k) + 2 \log2(\log2(k) + 1) + 1
 \end{equation}
@@ -685,7 +630,7 @@ the following improvements:
 \begin{itemize}
     \item The memory object was augmented with various built-in rankings, allowing
           for faster operations during future filtering. For instance, since the memory
-          object keeps a mapping from timestamps to events one can perform a quick
+          object keeps a mapping from timestamp to events one can perform a quick
           filtering by date without having to loop over all stored element. This convenient mapping,
           however, is not directly used to retrieve events by their date of occurrence, so as to
           preserve the theoretical model of memory as an unordered set, as presented in
@@ -699,7 +644,7 @@ the following improvements:
           effectively break the innermost loop in alg. \ref{alg:complex_iter}.
 
     \item Some of the filters, for instance the date and rank filters, were
-          hard-written. Events can be selected from these pre-computed mappings over the memory objects
+          hard-written. Events can be selected from these precomputed mappings over the memory objects
           rather than by testing a predicate over all memory elements.
 \end{itemize}
 
@@ -709,7 +654,7 @@ the following improvements:
 
 \subsubsection{The ``TV'' scenario:}
 \paragraph{Memorability}
-The computation of the description complexity measure for the 2400 events recorded in this scenario took around 90 seconds using an i7-8600u laptop. The resulting complexities, in Figure \ref{fig:scenar1_complexity}, clearly shows that TV events appear more simple than luminosity events. In fact, for most luminosity events, the complexity corresponds to the random choice complexity, 25 bits in this example. This pattern comes from the number of luminosity events per day, 24, is too high to consider the retrieval path $day(k) \rightarrow randomPick()$ simpler than $randomPick$ from the entire memory, except for the first more recent days, which appear simpler (on the right-hand side of Figure \ref{fig:scenar1_complexity})
+The computation of the description complexity measure for the 2400 events recorded in this scenario took around 90 seconds using an i7-8600u laptop. The resulting complexities, in Figure \ref{fig:scenar1_complexity}, show that TV events appear more simple than luminosity events. In fact, for most luminosity events, the complexity corresponds to the random choice complexity, 25 bits in this example. This pattern comes from the number of luminosity events per day, 24, is too high to consider the retrieval path $day(k) \rightarrow randomPick()$ simpler than $randomPick$ from the entire memory, except for the first more recent days, which appear simpler (on the right-hand side of Figure \ref{fig:scenar1_complexity})
 \begin{figure}
     \centering
     \includegraphics[width=.7\linewidth]{figures/memorability_scenar_1.png}
@@ -717,19 +662,32 @@ The computation of the description complexity measure for the 2400 events record
     \label{fig:scenar1_complexity}
 \end{figure}
 \paragraph{Abduction}
-To show the potential application to abductive inference, we use our approach to the first scenario, to see if memorabilty alone can find the brand new TV to be a reasonable cause for the sudden low light.
+To show the potential application to abductive inference, we use our approach to the first scenario, to see if memorability alone can find the brand new TV to be a reasonable cause for the sudden low light.
 
-The result of our algorithm is given in Figure \ref{fig:abduction_res}. It shows that the system correctly identifies the TV as being the cause. The reason for this choice is that, since the tv's device ID is unique among all other events of type ``tv'', its description complexity is very low.
+The result of our algorithm is given in Table \ref{tab:abduction_res}. It shows that the system correctly identifies the TV as being the cause. The reason for this choice is that, since the smart TV's device ID is unique among all other events of type ``TV'', its description complexity is very low.
 
-\begin{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=.8\linewidth]{./figures/abduction_1_results}
+%     \caption{Outputs of the memorability-based abduction module. This represent the 3 events in the memory having the highest memorability score relative to the consequence event.}
+%     \label{fig:abduction_res}
+% \end{figure}
+
+\begin{table}
     \centering
-    \includegraphics[width=.8\linewidth]{./figures/abduction_1_results}
-    \caption{Outputs of the memorability-based abduction module. This represent the 3 events in the memory having the highest memorability score relative to the consequence event.}
-    \label{fig:abduction_res}
-\end{figure}
+    \begin{tabular}{l|c|c}
+        Event Id & Description & Relative memorability (bits)\\
+        \hline
+        2513 & Use of smart TV & 16.76 \\
+        2427 & Last use of the old TV & 14.81 \\
+        2411 & Second-last use of the old TV & 11.21 
+    \end{tabular}
+    \caption{Output of the memorability-based abduction module: top 3 events for the relative memorability metrics.}
+    \label{tab:abduction_res}
+\end{table}
 
 \subsubsection{The ``temperature'' scenario:}
-\paragraph{Memorability}
+% \paragraph{Memorability}
 
 The results of the description complexity evaluation, for the described setup,
 are shown in fig. \ref{fig:computed_cplx}. The entire computation, over 4
@@ -739,29 +697,30 @@ around 30 seconds on a commercial laptop with an i7-8700u CPU.
 The blue line emerges from a set of ``usual'' events, whose complexity varies as the logarithm of
 the elapsed time since their occurrence. It corresponds to events
 for which the best retrieval path consists of a time description (e.g. ``2
-months and 12 days ago''). As such, it appears that most days are considered usual by our memorability score: therie is no better way to retrieve them than simply giving the day of their occurence. On the other hand, some events stand out in terms of
+months and 12 days ago''). As such, it appears that most days are considered usual by our memorability score: there is no better way to retrieve them than simply giving the day of their occurrence. On the other hand, some events stand out in terms of
 complexity: some appear simpler, as they can be distinguished by using their
 rank along some axis (``the hottest day'', ``the second longest user's
 absence''), or the rare occurrence of their kind (``the only fault on the heater'').
 
 \begin{figure}[ht]
     \centering
-\includegraphics[width=.8\linewidth]{figures/complexities_computed}
+    \includegraphics[width=.9\linewidth]{figures/complexity_scenar_2.png}
     \caption{Computed description complexities of events with retrieval paths of
-length at most 4. Events of type ``day'' (blue), ``hot'' (green), ``cold''
-(red), ``device removal''(cyan) are shown.}
+        length at most 4. Events of type ``day'' (blue), ``hot'' (red), ``cold''
+        (gray), ``device removal''(orange) and ``device addition'' (cyan) are shown. Events mentioned in the text are specified.}
     \label{fig:computed_cplx}
 \end{figure}
 
-The ``memorability score'' is shown in Figure \ref{fig:result1}. Similar to what happened with the description complexity score, most events appear with a low memorability: this corresponds mostly to events from the ``main sequence'' from Figure. \ref{fig:computed_cplx}. On the other hand, some events stand out : for instance event \textbf{TODO}, which are the hottest and coldest days recorded, or event \textbf{TODO} which correspond to the rare type \emph{device\_removal}.
+The ``memorability score'' is shown in Figure \ref{fig:result1}. Similar to what happened with the description complexity score, most events appear with a low memorability: this corresponds mostly to events from the ``main sequence'' from Figure. \ref{fig:computed_cplx}. On the other hand, some events stand out : for instance events 20 and 329, which are respectively the hottest and coldest days recorded, or event 183 which correspond to the rare type \emph{device\_removal}.
 Since our memorability measure treats unusually complex or unusually simple events the
 same way (from the absolute value operation in Equation \ref{eq:unexpected}), we
 observe that some events are memorable due to their context only. For instance,
-the group \textbf{TODO} appears more complex than expected: the same event occuring simultaneously in all four rooms of the house make each instance harder to discern. Table \ref{tab:predicates}.
+the group to which event 149 belongs appears more complex than expected: the same event occurring simultaneously in all four rooms of the house make each instance harder to discern. 
+Table \ref{tab:paths} illustrates this by exhibiting the retrieval paths used for complexity computation for these events.
 
 \begin{figure}[ht]
     \centering
-\includegraphics[width=.8\linewidth]{figures/complexities_surprises}
+    \includegraphics[width=.8\linewidth]{figures/memo_scenar_2.png}
     \caption{Memorability score for events in memory}
     \label{fig:result1}
 \end{figure}
@@ -769,13 +728,15 @@ the group \textbf{TODO} appears more complex than expected: the same event occur
 \begin{table}
     \centering
     \begin{tabular}{c|c|c}
-        Event iD & Event Type    & Retrieval Path                         \\
+        Event iD & Event Type    & Retrieval Path                            \\
         \hline
-        1        & hot           & Label("hot"), AxisRank(1)              \\
-        2        & hot           & Label("hot"), Day(21), Location(room2) \\
-        102      & deviceRemoval & Label("deviceRemoval), Day(2)          \\
+        20       & day           & Label("day"), AxisRank(0, "max\_temp")    \\
+        329      & day           & Label("day"), AxisRank(0, "min\_temp")    \\
+        183      & deviceRemoval & Label("deviceRemoval"), Day(0)            \\
+        149      & cold          & Label("cold"), Day(2), Device("thermo\_2") \\
     \end{tabular}
-    \caption{Selected events from the ``temperature example'', with their shortest retrieval path.}
+    \caption{Selected events from the ``temperature example'' with their shortest retrieval path.}
+    \label{tab:paths}
 \end{table}
 
 Given that we generated the data used for this experiment, it is possible to
@@ -785,20 +746,20 @@ events. The result is presented as a ROC curve in Figure \ref{fig:roc}. This sho
 
 \begin{figure}[ht]
     \centering
-\includegraphics[width=0.7\linewidth]{./figures/roc}
+    \includegraphics[width=0.7\linewidth]{./figures/roc}
     \caption{Experimental ROC curve (True Positive Rate against False Positive
-Rate) for a classifier based on our memorability score. Measures consider 23
-manually flagged events as memorable (events added to the normal background
-as described in Section~\ref{sec:example}.)}
+        Rate) for a classifier based on our memorability score. Measures consider 23
+        manually flagged events as memorable (events added to the normal background
+        as described in Section~\ref{sec:example}.)}
     \label{fig:roc}
 \end{figure}
 
-\paragraph{Abduction}
-As an illustration of the abductive inference made possible our memorability
-score, we used as a target anomaly the temperature drops visible in the raw
-time series data from our scenario (fig \ref{fig:ts_example}).
+% \paragraph{Abduction}
+% As an illustration of the abductive inference made possible our memorability
+% score, we used as a target anomaly the temperature drops visible in the raw
+% time series data from our scenario (fig \ref{fig:ts_example}).
 
-\textbf{TODO: the figure is still missing!}
+% \textbf{TODO: the figure is still missing!}
 
 
 
@@ -826,14 +787,14 @@ to Kolmogorov. Subsequently, notions of complexity re-emerged in causal inferenc
 considering the direct joint probability is simpler, in terms of Kolmogorov complexity,
 than the inverse direction.
 
-The relation between complexity, compression and causality was used in \cite{tatti_finding_2008} to devise the PACK algorithm. It models a dataset by using a family of decision trees where each tree describes how one variable can be expressed given the others. By chosing the model minimizing the total description length (i.e. description of the model and description of the errors), PACK compresses the dataset while finding relations between variables which can be further analyzed. More recently, \cite{marx_causal_2018} used Minimum Description Lenght to determine, given a joint probability distribution over $(X,Y)$, whether $X$ causes $Y$ or $Y$ causes $X$. Their method is based on tree models, and implying that a model respecting the causal relation will be simpler to describe.
+The relation between complexity, compression and causality was used in \cite{tatti_finding_2008} to devise the PACK algorithm. It models a dataset by using a family of decision trees where each tree describes how one variable can be expressed given the others. By choosing the model minimizing the total description length (i.e. description of the model and description of the errors), PACK compresses the dataset while finding relations between variables which can be further analyzed. More recently, \cite{marx_causal_2018} used Minimum Description Length to determine, given a joint probability distribution over $(X,Y)$, whether $X$ causes $Y$ or $Y$ causes $X$. Their method is based on tree models, and implying that a model respecting the causal relation will be simpler to describe.
 
 
 Another topic where AIT can provide original approaches is event mining in data streams.
 \cite{aggarwal_outlier_2017} provides a good review of modern approaches and techniques
-in the field. Some previous work can also be noted for having used AIT techniques to qualify and detect events in time series data. For instance, \cite{batista_complexity-invariant_2011,fadlallah_weighted-permutation_2013} propose weighted permutation entropy as a proxy for complexity measures in time series data, and use it to find relations between different time series. \cite{hu_discovering_2011} proposes a MDL approach to find the intrinsic dimensions of time series. All these approaches are interesting, and can be integrated into our canvas as tools to detect events using only complexity. Using this, one could acheive a purely complexity-driven process for detecting and qualifying events.
+in the field. Some previous work can also be noted for having used AIT techniques to qualify and detect events in time series data. For instance, \cite{batista_complexity-invariant_2011,fadlallah_weighted-permutation_2013} propose weighted permutation entropy as a proxy for complexity measures in time series data, and use it to find relations between different time series. \cite{hu_discovering_2011} proposes a MDL approach to find the intrinsic dimensions of time series. All these approaches are interesting, and can be integrated into our canvas as tools to detect events using only complexity. Using this, one could achieve a purely complexity-driven process for detecting and qualifying events.
 
-The philosphy of our approach can be closely related to the ``Isolation forests'' method\cite{liu_isolation_2008,hariri_extended_2021}. It evaluates the isolation of data points by constructing random binary tree classifiers. On average, outlier points will require less operations to be singled out. Using the average height of leaves in the tree as a metrics, this approach succeeds in identifying outlier points without having to define a ``typical'' point. This approach can be understood in terms of complexity: each node of binary tree classifier needs a fixed amount of information to be described (which variable and threshold are used). So nodes that place higher need less information to be described. As such, outliers need less information to be singled out. Compared to ours, this method is tailored for data-points living in the same metric space. By using predicates as a proxy for complexity computation, our methods is more general, as it is agnostic regarding the nature of events. However, the introdcution of predicates adds a subjectivity in the determination of memorable points, as we will discuss later.
+The philosophy of our approach can be closely related to the ``Isolation forests'' method\cite{liu_isolation_2008,hariri_extended_2021}. It evaluates the isolation of data points by constructing random binary tree classifiers. On average, outlier points will require less operations to be singled out. Using the average height of leaves in the tree as a metrics, this approach succeeds in identifying outlier points without having to define a ``typical'' point. This approach can be understood in terms of complexity: each node of binary tree classifier needs a fixed amount of information to be described (which variable and threshold are used). So nodes that place higher need less information to be described. As such, outliers need less information to be singled out. Compared to ours, this method is tailored for data-points living in the same metric space. By using predicates as a proxy for complexity computation, our methods is more general, as it is agnostic regarding the nature of events. However, the introduction of predicates adds a subjectivity in the determination of memorable points, as we will discuss later.
 
 While all these works advocate in favor of a strong link between complexity and the
 discovery of causes, not other works extends the notion up to the point we propose in this paper, using complexity only as a tool to express the intuitive notion of memorability, and using it for inference.
@@ -841,8 +802,6 @@ discovery of causes, not other works extends the notion up to the point we propo
 \subsection{Perspectives}
 \label{sec:future}
 
-% L'utilisation d'une mesure unique de la mémorabilité d'événements de natures et caracteristiques diverses 
-% La mise en application pratique des notions théoriques de mémorabilité et mémorabilité relative nécessité des développements futurs. Dans cette section, nous en avons sélectionné 2 qui nous semblent, à ce jour, les plus préoccupants.
 The practical application of the theoretical notions of memorability and relative memorability requires future developments. In this section, we have selected two of them which seem to us, to date, the most challenging.
 
 
