@@ -110,7 +110,7 @@ $^{2}$ \quad Télécom Paris; \{first\}.\{last\}@telecom-paris.fr;
 %\conference{} % An extended version of a conference paper
 
 \abstract{
-With the increasing number of connected devices, complex systems such as smart homes record a multitude of events of various types, magnitude and characteristics. Current systems struggle to identify which events can be considered more memorable than others. In contrast, human are able to quickly categorize some events as being more ``memorable'' than others. They do so wihtout relying on knowledge of the system's inner working or large previous datasets. Having this ability would allow the system to: i) identify and summarize a situation to the user by presenting only memorable events; ii) suggest the most memorable events as possible hypotheses in an abductive inference process. Our proposal is to use Algorithmic Information Theory to define a ``memorability'' score by retrieving events using predicative filters. We use smart-home examples to illustrate how our theoretical approach can be implemented in practice.
+With the increasing number of connected devices, complex systems such as smart homes record a multitude of events of various types, magnitude and characteristics. Current systems struggle to identify which events can be considered more memorable than others. In contrast, human are able to quickly categorize some events as being more ``memorable'' than others. They do so without relying on knowledge of the system's inner working or large previous datasets. Having this ability would allow the system to: i) identify and summarize a situation to the user by presenting only memorable events; ii) suggest the most memorable events as possible hypotheses in an abductive inference process. Our proposal is to use Algorithmic Information Theory to define a ``memorability'' score by retrieving events using predicative filters. We use smart-home examples to illustrate how our theoretical approach can be implemented in practice.
 }
 
 
@@ -452,7 +452,7 @@ should be considered \emph{similar} events. Given that we deal with non comparab
 
 \begin{equation}
     \label{eq:similar}
-    N_{\pi, k}(e) = \{e'\in M_0, (e' \neq e) \wedge \pi_k(e')\}
+    N_{\pi, k}(e) = \{e'\in M_0, (e' \neq e) \wedge \pi_k(e')\}\,.
 \end{equation}
 
 Now, when considering, for all possible predicates $\pi_k$, the corresponding
@@ -735,7 +735,8 @@ Table \ref{tab:paths} illustrates this by exhibiting the retrieval paths used fo
 Given that we generated the data used for this experiment, it is possible to
 flag all perturbation events apart from the usual daily events and evaluate how a
 detection based on the ``memorability'' score would perform in distinguishing these
-events. The result is presented as a ROC curve in Figure \ref{fig:roc}, obtained by varying the memorability threshold. This shows the memorability score's performance as a classifying tool for ``out-of-the norm'' events. In this example, memorability alone correctly identified 18 manually generated events with only 5 false-positives. While the direct application of memorability for classification or event detection is not within the scope of this paper (see Section \ref{sec:related} for complexity-based detection), this first result is on par with the motivation of memorability being in accordance with the intuitive notion.
+events. Even if event detection is not the main purpose of memorability, we conducted the following experiment: we identified 20 events from the ``Temperature scenario'' that were the result of hand-made perturbation in the smart home simulation (such as days where the outdoor temperature was set to a abnormally high temperature, device removal/addition) as ground-truth events. Then, we used a memorability-based detector (i.e. flagging all events with memorability above a given threshold as ``true'' events) and tested different threshold values to observe the True-Positive and False-Positive rates. The result of this experiment is presented as a ROC curve in Figure \ref{fig:roc} This illustrates the memorability score's performance as a classifying tool for ``out-of-the norm'' events. In this example, misclassification has been observed to come from different phenomena: i) recent events are memorable with our metrics, while not being ground truth events; ii) as events are defined on a daily basis, this classification may not be suiting for days-long events (e.g. events 329 and 339 correspond in fact to the same cold night generated in the data), which adds unnecessary information to their description and therefore hinder their memorability score. While the former is a consequence of how our memorability score considers recent events as particularly memorable (this can be understood as a desired feature for such a metrics), the latter comes from event detection and definition and could be improved by further developments.
+
 
 \begin{figure}[!ht]
     \centering
